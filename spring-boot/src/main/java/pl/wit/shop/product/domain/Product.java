@@ -52,5 +52,12 @@ public class Product {
         this.name = name;
         this.price = price;
     }
+
+    Product update(ProductCategory productCategory, String name, BigDecimal price) {
+        this.category = productCategory;
+        this.name = name;
+        this.price = price;
+        return this;
+    }
 }
 
