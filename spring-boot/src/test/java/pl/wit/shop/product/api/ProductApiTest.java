@@ -15,6 +15,7 @@ import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,6 +74,23 @@ class ProductApiTest implements ProductTestDataIdentifiers {
                         .content(asJson(aProductInput().build()))
                 )
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void delete_shouldReturn200() throws Exception {
+        mockMvc.perform(delete(PRODUCT_API + "/" + PRODUCT_1_UUID))
+                .andExpect(status().isOk());
+
+        then(productService).should().delete(PRODUCT_1_UUID);
+    }
+
+    @Test
+    void delete_shouldReturn404_whenProductNotExist() throws Exception {
+        willThrow(ProductNotFoundException.class)
+                .given(productService).delete(any());
+
+        mockMvc.perform(delete(PRODUCT_API + "/" + PRODUCT_1_UUID))
+                .andExpect(status().isNotFound());
     }
 
     @Test

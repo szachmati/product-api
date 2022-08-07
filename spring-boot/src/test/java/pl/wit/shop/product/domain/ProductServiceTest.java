@@ -80,6 +80,26 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     }
 
     @Test
+    void delete_shouldPassParams() {
+        final Product product = aHomeProduct().build();
+        given(productRepository.getByUuid(any())).willReturn(product);
+
+        productService.delete(PRODUCT_1_UUID);
+
+        then(productRepository).should().delete(product);
+    }
+
+    @Test
+    void delete_shouldThrowProductNotFoundException_whenProductNotExist() {
+        willThrow(ProductNotFoundException.class)
+                .given(productRepository).getByUuid(any());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> productService.delete(NOT_EXISTING_PRODUCT_UUID)
+        );
+    }
+
+    @Test
     void update_shouldPassParams() {
         given(productRepository.getByUuid(any()))
                 .willReturn(aHomeProduct().build());

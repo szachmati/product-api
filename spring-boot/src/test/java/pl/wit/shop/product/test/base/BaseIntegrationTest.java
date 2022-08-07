@@ -1,10 +1,12 @@
 package pl.wit.shop.product.test.base;
 
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
+@ActiveProfiles("test")
 public abstract class BaseIntegrationTest {
 
     private static final PostgreSQLContainer<?> POSTGRE_SQL_CONTAINER;

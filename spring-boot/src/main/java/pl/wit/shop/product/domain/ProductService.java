@@ -33,6 +33,12 @@ public class ProductService {
         product.update(productCategory, dto.getName(), dto.getPrice());
     }
 
+    @Transactional
+    public void delete(UUID uuid) {
+        Product product = productRepository.getByUuid(uuid);
+        productRepository.delete(product);
+    }
+
     private void checkIfProductWithGivenNameExistsInCategory(ProductSaveDto dto) {
         if (productRepository.existsByNameAndCategoryName(dto.getName(), dto.getCategory())) {
             throw new ProductAlreadyExistsException(dto.getName(), dto.getCategory());

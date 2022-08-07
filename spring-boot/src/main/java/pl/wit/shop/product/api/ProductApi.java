@@ -1,9 +1,9 @@
 package pl.wit.shop.product.api;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +32,11 @@ public class ProductApi {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Valid ProductInput productInput) {
         productService.create(productInput.toDto());
+    }
+
+    @DeleteMapping("/{uuid}")
+    public void delete(@PathVariable UUID uuid) {
+        productService.delete(uuid);
     }
 
     @PutMapping("/{uuid}")
