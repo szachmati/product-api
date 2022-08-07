@@ -19,11 +19,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.wit.shop.product.api.ProductInputBuilder.aProductInput;
-import static pl.wit.shop.product.api.ProductController.ProductInput;
+import static pl.wit.shop.product.api.ProductApi.ProductInput;
 import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
 import static pl.wit.shop.product.domain.ProductCategoryRepository.ProductCategoryNotFoundException;
+import static pl.wit.shop.product.domain.ProductService.ProductAlreadyExistsException;
 
-@WebMvcTest(controllers = ProductController.class)
+@WebMvcTest(controllers = ProductApi.class)
 class ProductApiTest implements ProductTestDataIdentifiers {
 
     private static final String PRODUCT_API = "/api/products";
@@ -63,6 +64,18 @@ class ProductApiTest implements ProductTestDataIdentifiers {
     }
 
     @Test
+    void create_shouldReturn409_whenProductWithGivenNameAlreadyExistsInCategory() throws Exception {
+        willThrow(ProductAlreadyExistsException.class)
+                .given(productService).create(any());
+
+        mockMvc.perform(post(PRODUCT_API)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJson(aProductInput().build()))
+                )
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     void update_shouldReturn204() throws Exception {
         final ProductInput productInput = aProductInput().build();
 
@@ -97,6 +110,18 @@ class ProductApiTest implements ProductTestDataIdentifiers {
                         .content(asJson(aProductInput().build()))
                 )
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void update_shouldReturn409_whenProductWithGivenNameAlreadyExistsInCategory() throws Exception {
+        willThrow(ProductAlreadyExistsException.class)
+                .given(productService).update(any(), any());
+
+        mockMvc.perform(put(PRODUCT_API + "/" + NOT_EXISTING_PRODUCT_UUID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJson(aProductInput().build()))
+                )
+                .andExpect(status().isConflict());
     }
 
     @SneakyThrows

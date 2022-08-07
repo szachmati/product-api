@@ -19,6 +19,8 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
+
 @Entity
 @Getter
 @EqualsAndHashCode(of = "uuid", callSuper = false)
@@ -39,7 +41,6 @@ public class Product {
     private ProductCategory category;
 
     @NotNull
-    @Column(unique = true)
     private String name;
 
     @NotNull
@@ -48,15 +49,15 @@ public class Product {
     Product(ProductCategory category, String name, BigDecimal price) {
         this.id = null;
         this.uuid = UUID.randomUUID();
-        this.category = category;
-        this.name = name;
-        this.price = price;
+        this.category = requireNonNull(category);
+        this.name = requireNonNull(name);
+        this.price = requireNonNull(price);
     }
 
-    Product update(ProductCategory productCategory, String name, BigDecimal price) {
-        this.category = productCategory;
-        this.name = name;
-        this.price = price;
+    Product update(ProductCategory category, String name, BigDecimal price) {
+        this.category = requireNonNull(category);
+        this.name = requireNonNull(name);
+        this.price = requireNonNull(price);
         return this;
     }
 }

@@ -24,6 +24,8 @@ import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategor
 import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 import static pl.wit.shop.product.domain.ProductSaveDtoBuilder.aProductSaveDto;
 import static pl.wit.shop.product.domain.ProductCategoryRepository.ProductCategoryNotFoundException;
+import static pl.wit.shop.product.domain.ProductService.ProductAlreadyExistsException;
+import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest implements ProductTestDataIdentifiers {
@@ -68,6 +70,16 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     }
 
     @Test
+    void create_shouldThrowProductAlreadyExistsException_whenProductWithGivenNameAlreadyExistsInCategory() {
+        willThrow(ProductAlreadyExistsException.class)
+                .given(productRepository).existsByNameAndCategoryName(anyString(), anyString());
+
+        assertThrows(ProductAlreadyExistsException.class,
+                () -> productService.create(aProductSaveDto().build())
+        );
+    }
+
+    @Test
     void update_shouldPassParams() {
         given(productRepository.getByUuid(any()))
                 .willReturn(aHomeProduct().build());
@@ -84,22 +96,36 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Test
     void update_shouldThrowProductNotFoundException_whenProductNotExist() {
-        willThrow(ProductRepository.ProductNotFoundException.class)
+        willThrow(ProductNotFoundException.class)
                 .given(productRepository).getByUuid(any());
 
-        assertThrows(ProductRepository.ProductNotFoundException.class,
+        assertThrows(ProductNotFoundException.class,
                 () -> productService.update(NOT_EXISTING_PRODUCT_UUID, aProductSaveDto().build())
         );
     }
 
     @Test
-    void update_shouldThrowProductCategoryNotFoundException_wheProductCategoryNotExist() {
+    void update_shouldThrowProductCategoryNotFoundException_whenProductCategoryNotExist() {
         given(productRepository.getByUuid(any()))
                 .willReturn(aHomeProduct().build());
         willThrow(ProductCategoryNotFoundException.class)
                 .given(productCategoryRepository).getByName(any());
 
         assertThrows(ProductCategoryNotFoundException.class,
+                () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
+        );
+    }
+
+    @Test
+    void update_shouldThrowProductAlreadyExistsException_whenProductWithGivenNameAlreadyExistsInCategory() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(aHomeProduct().build());
+        given(productCategoryRepository.getByName(anyString()))
+                .willReturn(aHomeProductCategory().build());
+        willThrow(ProductAlreadyExistsException.class)
+                .given(productRepository).existsByNameAndCategoryName(anyString(), anyString());
+
+        assertThrows(ProductAlreadyExistsException.class,
                 () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
         );
     }

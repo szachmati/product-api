@@ -8,6 +8,8 @@ import lombok.With;
 
 import java.math.BigDecimal;
 
+import static pl.wit.shop.product.api.ProductApi.ProductInput;
+
 @With
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProductInputBuilder {
@@ -25,7 +27,7 @@ public class ProductInputBuilder {
         return new ProductInputBuilder();
     }
 
-    public ProductController.ProductInput build() {
-        return new ProductController.ProductInput(name, category, price);
+    public ProductInput build() {
+        return new ProductInput(name, category, price);
     }
 }

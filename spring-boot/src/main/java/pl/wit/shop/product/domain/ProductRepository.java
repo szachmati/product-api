@@ -1,12 +1,14 @@
 package pl.wit.shop.product.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.wit.shop.utils.NotFoundException;
+import pl.wit.shop.shared.exception.NotFoundException;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    boolean existsByNameAndCategoryName(String name, String categoryName);
 
     Optional<Product> findByUuid(UUID uuid);
 

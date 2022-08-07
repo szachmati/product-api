@@ -1,7 +1,9 @@
 package pl.wit.shop.product.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,14 +15,16 @@ import pl.wit.shop.product.domain.ProductSaveDto;
 import pl.wit.shop.product.domain.ProductService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
-public class ProductController {
+public class ProductApi {
 
     private final ProductService productService;
 
@@ -36,7 +40,7 @@ public class ProductController {
         productService.update(uuid, productInput.toDto());
     }
 
-    record ProductInput(@NotNull String name, @NotNull String category, @NotNull BigDecimal price) {
+    record ProductInput(@NotBlank String name, @NotNull String category, @NotNull BigDecimal price) {
         ProductSaveDto toDto() {
             return new ProductSaveDto(name, category, price);
         }

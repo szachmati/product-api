@@ -1,1 +1,10 @@
-
+spring:
+  # Below properties are filled in BaseIntegrationTest class
+  datasource:
+    driver-class-name:
+    url:
+    username:
+    password:
+  jpa:
+    open-in-view: false
+    show-sql: true

@@ -9,6 +9,6 @@ spring:
     password: shop
   jpa:
     open-in-view: false
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: create-drop

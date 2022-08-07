@@ -1,7 +1,7 @@
 package pl.wit.shop.product.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.wit.shop.utils.NotFoundException;
+import pl.wit.shop.shared.exception.NotFoundException;
 
 import java.util.Optional;
 
