@@ -21,6 +21,18 @@ public class ProductCategoryBuilder implements ProductCategoryTestDataIdentifier
         return new ProductCategoryBuilder();
     }
 
+    public static ProductCategoryBuilder anElectronicsProductCategory() {
+        return new ProductCategoryBuilder()
+                .withId(PRODUCT_CATEGORY_2_ID)
+                .withName("ELECTRONICS");
+    }
+
+    public static ProductCategoryBuilder aHealthProductCategory() {
+        return new ProductCategoryBuilder()
+                .withId(PRODUCT_CATEGORY_3_ID)
+                .withName("HEALTH");
+    }
+
     public ProductCategory build() {
         ProductCategory productCategory = new ProductCategory();
         ReflectionTestUtils.setField(productCategory, "id", id);

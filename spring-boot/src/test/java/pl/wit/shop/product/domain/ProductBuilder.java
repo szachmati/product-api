@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
+import static pl.wit.shop.product.domain.ProductCategoryBuilder.anElectronicsProductCategory;
 
 @With
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,8 +30,26 @@ public class ProductBuilder implements ProductTestDataIdentifiers {
         this.price = BigDecimal.ONE;
     }
 
-    public static ProductBuilder aHomeProduct() {
+    public static ProductBuilder aFirstHomeProduct() {
         return new ProductBuilder();
+    }
+
+    public static ProductBuilder aSecondHomeProduct() {
+        return new ProductBuilder()
+                .withId(PRODUCT_2_ID)
+                .withUuid(PRODUCT_2_UUID)
+                .withName("Second home product")
+                .withCategory(aHomeProductCategory().build())
+                .withPrice(new BigDecimal("30.87"));
+    }
+
+    public static ProductBuilder aMonitorProduct() {
+        return new ProductBuilder()
+                .withId(PRODUCT_3_ID)
+                .withUuid(PRODUCT_3_UUID)
+                .withName("Monitor")
+                .withCategory(anElectronicsProductCategory().build())
+                .withPrice(new BigDecimal("20.44"));
     }
 
     public Product build() {

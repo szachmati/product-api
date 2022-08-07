@@ -5,11 +5,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,7 +24,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
-import static pl.wit.shop.product.domain.ProductBuilder.aHomeProduct;
+import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
+import static pl.wit.shop.product.domain.ProductBuilder.aMonitorProduct;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
 import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategory;
 import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
@@ -81,7 +88,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Test
     void delete_shouldPassParams() {
-        final Product product = aHomeProduct().build();
+        final Product product = aFirstHomeProduct().build();
         given(productRepository.getByUuid(any())).willReturn(product);
 
         productService.delete(PRODUCT_1_UUID);
@@ -100,9 +107,24 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     }
 
     @Test
+    void findAllProductsInCategory_shouldReturnPageWithProductsInGivenCategory() {
+        given(productRepository.findAllProductsInCategory(anyString(), any()))
+                .willReturn(new PageImpl<>(List.of(aMonitorProduct().build())));
+
+        Page<Product> result = productService.findAllProductsInCategory("ELECTRONICS", PageRequest.of(1, 2));
+
+        assertThat(result.getContent(), contains(
+                isProduct()
+                        .withUuid(PRODUCT_3_UUID)
+                        .withName("Monitor")
+                        .withCategory(isProductCategory().withName("ELECTRONICS"))
+        ));
+    }
+
+    @Test
     void update_shouldPassParams() {
         given(productRepository.getByUuid(any()))
-                .willReturn(aHomeProduct().build());
+                .willReturn(aFirstHomeProduct().build());
         given(productCategoryRepository.getByName(anyString()))
                 .willReturn(aHomeProductCategory().build());
 
@@ -127,7 +149,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     @Test
     void update_shouldThrowProductCategoryNotFoundException_whenProductCategoryNotExist() {
         given(productRepository.getByUuid(any()))
-                .willReturn(aHomeProduct().build());
+                .willReturn(aFirstHomeProduct().build());
         willThrow(ProductCategoryNotFoundException.class)
                 .given(productCategoryRepository).getByName(any());
 
@@ -139,7 +161,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     @Test
     void update_shouldThrowProductAlreadyExistsException_whenProductWithGivenNameAlreadyExistsInCategory() {
         given(productRepository.getByUuid(any()))
-                .willReturn(aHomeProduct().build());
+                .willReturn(aFirstHomeProduct().build());
         given(productCategoryRepository.getByName(anyString()))
                 .willReturn(aHomeProductCategory().build());
         willThrow(ProductAlreadyExistsException.class)

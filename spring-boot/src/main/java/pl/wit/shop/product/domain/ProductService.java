@@ -1,6 +1,8 @@
 package pl.wit.shop.product.domain;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wit.shop.shared.exception.ConflictException;
@@ -26,17 +28,21 @@ public class ProductService {
     }
 
     @Transactional
+    public void delete(UUID uuid) {
+        Product product = productRepository.getByUuid(uuid);
+        productRepository.delete(product);
+    }
+
+    public Page<Product> findAllProductsInCategory(String category, Pageable pageable) {
+        return productRepository.findAllProductsInCategory(category, pageable);
+    }
+
+    @Transactional
     public void update(UUID uuid, ProductSaveDto dto) {
         Product product = productRepository.getByUuid(uuid);
         ProductCategory productCategory = productCategoryRepository.getByName(dto.getCategory());
         checkIfProductWithGivenNameExistsInCategory(dto);
         product.update(productCategory, dto.getName(), dto.getPrice());
-    }
-
-    @Transactional
-    public void delete(UUID uuid) {
-        Product product = productRepository.getByUuid(uuid);
-        productRepository.delete(product);
     }
 
     private void checkIfProductWithGivenNameExistsInCategory(ProductSaveDto dto) {
