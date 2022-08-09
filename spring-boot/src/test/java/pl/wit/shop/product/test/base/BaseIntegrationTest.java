@@ -1,30 +1,31 @@
 package pl.wit.shop.product.test.base;
 
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 
-@ActiveProfiles("test")
-public abstract class BaseIntegrationTest {
+@AutoConfigureTestEntityManager
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public abstract class BaseIntegrationTest extends BaseDatabaseTest {
 
-    private static final PostgreSQLContainer<?> POSTGRE_SQL_CONTAINER;
+    @LocalServerPort
+    private int port;
 
-    static {
-        POSTGRE_SQL_CONTAINER = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-                .withDatabaseName("integration-test-db")
-                .withUsername("test")
-                .withPassword("test");
-        POSTGRE_SQL_CONTAINER.start();
+    @Autowired
+    protected TestRestTemplate testRestTemplate;
+
+    @TestConfiguration
+    public class TestRestTemplateConfig {
+        @Bean
+        public TestRestTemplate testRestTemplate() {
+            return new TestRestTemplate(new RestTemplateBuilder()
+                    .rootUri("http://localhost:" + port)
+            );
+        }
     }
-
-    @DynamicPropertySource
-    static void setDatasourceProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", POSTGRE_SQL_CONTAINER::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRE_SQL_CONTAINER::getUsername);
-        registry.add("spring.datasource.password", POSTGRE_SQL_CONTAINER::getPassword);
-        registry.add("spring.datasource.driver-class-name", POSTGRE_SQL_CONTAINER::getDriverClassName);
-    }
-
 }

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -13,9 +16,12 @@ import pl.wit.shop.product.domain.ProductService;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -91,6 +97,23 @@ class ProductApiTest implements ProductTestDataIdentifiers {
 
         mockMvc.perform(delete(PRODUCT_API + "/" + PRODUCT_1_UUID))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void findAllProductsInCategory_shouldReturn200() throws Exception {
+        given(productService.findAllProductsInCategory(anyString(), any()))
+                .willReturn(Page.empty());
+
+        mockMvc.perform(get(PRODUCT_API)
+                        .param("category", "HOME")
+                        .param("sort", "HOME,desc")
+                        .param("page", "2")
+                        .param("size", "50")
+                )
+                .andExpect(status().isOk());
+
+        then(productService).should()
+                .findAllProductsInCategory("HOME", PageRequest.of(2, 50, Sort.by("HOME").descending()));
     }
 
     @Test

@@ -20,9 +20,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 .orElseThrow(() -> new ProductNotFoundException(uuid));
     }
 
-    @Query("SELECT p FROM Product p " +
-            "INNER JOIN p.category " +
-            "WHERE p.category.name = ?1")
+    @Query(value = "SELECT p FROM Product p " +
+            "INNER JOIN FETCH p.category " +
+            "WHERE p.category.name = ?1",
+        countQuery = "SELECT count(p) FROM Product p " +
+                "WHERE p.category.name = ?1 "
+    )
     Page<Product> findAllProductsInCategory(String category, Pageable pageable);
 
     class ProductNotFoundException extends NotFoundException {

@@ -3,13 +3,10 @@ package pl.wit.shop.product.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.wit.shop.product.test.base.BaseIntegrationTest;
+import pl.wit.shop.product.test.base.BaseJpaTest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,10 +25,7 @@ import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 import static pl.wit.shop.product.test.data.ProductTestDataIdentifiers.PRODUCT_1_UUID;
 import static pl.wit.shop.product.test.data.ProductTestDataIdentifiers.PRODUCT_2_UUID;
 
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ProductRepositoryTest extends BaseIntegrationTest {
+class ProductRepositoryTest extends BaseJpaTest {
 
     @Autowired
     private ProductRepository productRepository;
