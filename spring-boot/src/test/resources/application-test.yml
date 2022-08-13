@@ -6,5 +6,7 @@ spring:
     username:
     password:
   jpa:
+    hibernate:
+      ddl-auto: create-drop
     open-in-view: false
     show-sql: true

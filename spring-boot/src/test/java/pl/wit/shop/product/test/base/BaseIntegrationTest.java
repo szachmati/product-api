@@ -10,20 +10,15 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.support.TransactionOperations;
 import pl.wit.shop.product.test.utils.RestTemplateMethods;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.metamodel.EntityType;
 import java.util.List;
 
 @Tag("integration")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class BaseIntegrationTest extends BaseDatabaseTest
-        implements RestTemplateMethods {
+public abstract class BaseIntegrationTest extends BaseDatabaseTest implements RestTemplateMethods {
 
     @LocalServerPort
     private int port;
@@ -33,36 +28,29 @@ public abstract class BaseIntegrationTest extends BaseDatabaseTest
     protected TestRestTemplate testRestTemplate;
 
     @Autowired
-    protected PlatformTransactionManager transactionManager;
+    protected TransactionOperations transactionOperations;
 
     @Autowired
     private EntityManager entityManager;
 
-    protected TransactionTemplate transactionTemplate;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     @BeforeEach
     void init() {
-        transactionTemplate = new TransactionTemplate(transactionManager);
         clearAllEntities();
     }
-    //TODO need to be fixed
+
     private void clearAllEntities() {
-        List<String> entities = entityManager.getMetamodel().getEntities()
-                .stream()
-                .filter(entityType -> entityType.getJavaType().getAnnotation(Entity.class) != null)
-                .map(EntityType::getName)
-                .toList();
-        transactionTemplate.executeWithoutResult(status -> {
-            entityManager.createNativeQuery("truncate table product_category, product CASCADE ")
+        List tableNames = getTableNamesInCurrentSchema();
+        transactionOperations.executeWithoutResult(status -> {
+            entityManager
+                    .createNativeQuery("TRUNCATE TABLE " + String.join(",", tableNames) + " restart IDENTITY")
                     .executeUpdate();
         });
-//        entityManager.createNativeQuery("SET CONSTRAINTS ALL DEFERRED")
-//                .executeUpdate();
-//        entityManager.createNativeQuery("TRUNCATE TABLE " + String.join(",", entities) + " CASCADE")
-//                .executeUpdate();
+    }
+
+    private List getTableNamesInCurrentSchema() {
+        return entityManager
+                .createNativeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'public'")
+                .getResultList();
     }
 
     @TestConfiguration

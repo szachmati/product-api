@@ -49,7 +49,7 @@ class ProductApiIntegrationTest extends BaseIntegrationTest implements ProductTe
                 post(PRODUCT_API, aProductInput().build(), String.class);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
-        transactionTemplate.executeWithoutResult(transactionStatus ->
+        transactionOperations.executeWithoutResult(transactionStatus ->
                 assertThat(productRepository.findAll(), contains(
                         isProduct()
                                 .withUuid(notNullValue())
@@ -158,7 +158,7 @@ class ProductApiIntegrationTest extends BaseIntegrationTest implements ProductTe
                 put(PRODUCT_API + "/" + PRODUCT_1_UUID, requestBody, String.class);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.NO_CONTENT));
-        transactionTemplate.executeWithoutResult(transactionStatus -> {
+        transactionOperations.executeWithoutResult(transactionStatus -> {
             assertThat(productRepository.getByUuid(PRODUCT_1_UUID), isProduct()
                     .withUuid(PRODUCT_1_UUID)
                     .withCategory(isProductCategory().withName("ELECTRONICS"))
