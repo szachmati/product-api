@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import pl.wit.shop.product.test.base.BaseJpaTest;
+import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,10 +23,8 @@ import static pl.wit.shop.product.domain.ProductCategoryBuilder.anElectronicsPro
 import static org.hamcrest.MatcherAssert.assertThat;
 import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategory;
 import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
-import static pl.wit.shop.product.test.data.ProductTestDataIdentifiers.PRODUCT_1_UUID;
-import static pl.wit.shop.product.test.data.ProductTestDataIdentifiers.PRODUCT_2_UUID;
 
-class ProductRepositoryTest extends BaseJpaTest {
+class ProductRepositoryTest extends BaseJpaTest implements ProductTestDataIdentifiers {
 
     @Autowired
     private ProductRepository productRepository;

@@ -1,11 +1,11 @@
 package pl.wit.shop.product.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,11 +45,10 @@ public class ProductApi {
         productService.delete(uuid);
     }
 
-    @GetMapping()
+    @GetMapping
     public Page<ProductOutput> findAllProductsInCategory(
             @RequestParam String category,
-            @PageableDefault(size = 20)
-            @SortDefault(sort = "name", caseSensitive = false, direction = Sort.Direction.ASC)
+            @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
         return productService.findAllProductsInCategory(category, pageable)
@@ -62,12 +61,13 @@ public class ProductApi {
         productService.update(uuid, productInput.toDto());
     }
 
-    record ProductOutput(
-            UUID uuid,
-            String category,
-            String name,
-            BigDecimal price
-    ) {
+    @Value
+    public static class ProductOutput {
+        UUID uuid;
+        String category;
+        String name;
+        BigDecimal price;
+
         static ProductOutput from(Product product) {
             return new ProductOutput(
                     product.getUuid(),

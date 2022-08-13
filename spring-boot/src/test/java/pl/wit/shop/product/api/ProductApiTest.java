@@ -106,14 +106,14 @@ class ProductApiTest implements ProductTestDataIdentifiers {
 
         mockMvc.perform(get(PRODUCT_API)
                         .param("category", "HOME")
-                        .param("sort", "HOME,desc")
+                        .param("sort", "category,DESC")
                         .param("page", "2")
                         .param("size", "50")
                 )
                 .andExpect(status().isOk());
 
         then(productService).should()
-                .findAllProductsInCategory("HOME", PageRequest.of(2, 50, Sort.by("HOME").descending()));
+                .findAllProductsInCategory("HOME", PageRequest.of(2, 50, Sort.by("category").descending()));
     }
 
     @Test
