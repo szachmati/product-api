@@ -1,5 +1,12 @@
 package pl.wit.shop.product.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.data.domain.Page;
@@ -34,38 +41,75 @@ public class ProductApi {
 
     private final ProductService productService;
 
+    @Operation(summary = "Create product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product was created successfully"),
+            @ApiResponse(responseCode = "409", description = "Product with given name already exists" +
+                    "in category")
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid ProductInput productInput) {
+    public void create(
+            @Parameter(description = "Product input data", required = true)
+            @RequestBody @Valid ProductInput productInput
+    ) {
         productService.create(productInput.toDto());
     }
 
+    @Operation(summary = "Delete product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product was deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Product with given id was not found")
+    })
     @DeleteMapping("/{uuid}")
-    public void delete(@PathVariable UUID uuid) {
+    public void delete(@Parameter(description = "Product id", required = true) @PathVariable UUID uuid) {
         productService.delete(uuid);
     }
 
+    @Operation(summary = "Find all products in category")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Products in given category",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProductOutput.class)))
+    )
     @GetMapping
     public Page<ProductOutput> findAllProductsInCategory(
-            @RequestParam String category,
+            @Parameter(description = "Products category", required = true) @RequestParam String category,
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC)
-            Pageable pageable
+                    Pageable pageable
     ) {
         return productService.findAllProductsInCategory(category, pageable)
                 .map(ProductOutput::from);
     }
 
+    @Operation(summary = "Update product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product was updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Product with given id was not found"),
+            @ApiResponse(responseCode = "409", description = "Product with given name already exists" +
+                    "in category")
+    })
     @PutMapping("/{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable UUID uuid, @RequestBody @Valid ProductInput productInput) {
+    public void update(
+            @Parameter(description = "Product id", required = true)
+            @PathVariable UUID uuid,
+            @Parameter(description = "Product input data", required = true)
+            @RequestBody @Valid ProductInput productInput
+    ) {
         productService.update(uuid, productInput.toDto());
     }
 
     @Value
+    @Schema
     public static class ProductOutput {
+        @Parameter(description = "Product id")
         UUID uuid;
+        @Parameter(description = "Product category")
         String category;
+        @Parameter(description = "Product name")
         String name;
+        @Parameter(description = "Product price")
         BigDecimal price;
 
         static ProductOutput from(Product product) {
@@ -78,7 +122,15 @@ public class ProductApi {
         }
     }
 
-    public record ProductInput(@NotBlank String name, @NotNull String category, @NotNull BigDecimal price) {
+    @Schema
+    public record ProductInput(
+            @Parameter(description = "Product name", required = true)
+            @NotBlank String name,
+            @Parameter(description = "Product category", required = true)
+            @NotNull String category,
+            @Parameter(description = "Product price", required = true)
+            @NotNull BigDecimal price
+    ) {
         ProductSaveDto toDto() {
             return new ProductSaveDto(name, category, price);
         }
