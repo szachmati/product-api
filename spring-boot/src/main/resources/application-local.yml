@@ -1,10 +1,8 @@
-server:
-  port: 8010
 
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/shop
+    url: jdbc:postgresql://localhost:4000/shop
     username: shop
     password: shop
   jpa:
