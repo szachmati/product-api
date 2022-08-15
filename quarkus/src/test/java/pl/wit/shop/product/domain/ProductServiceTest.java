@@ -29,6 +29,7 @@ import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 import static pl.wit.shop.product.domain.ProductSaveDtoBuilder.aProductSaveDto;
 import static pl.wit.shop.product.domain.ProductCategoryRepository.ProductCategoryNotFoundException;
 import static pl.wit.shop.product.domain.ProductService.ProductAlreadyExistsException;
+import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
 
 @QuarkusTest
 class ProductServiceTest implements ProductTestDataIdentifiers {
@@ -98,8 +99,12 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Test
     void delete_shouldThrowProductNotFoundException_whenProductNotExist() {
-        willThrow(ProductRepository.ProductNotFoundException.class)
-                .given()
+        willThrow(ProductNotFoundException.class)
+                .given(productRepository).getByUuid(any());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> productService.delete(PRODUCT_1_UUID)
+        );
     }
 
     @Test
@@ -139,10 +144,10 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Test
     void update_shouldThrowProductNotFoundException_whenProductNotExist() {
-        willThrow(ProductRepository.ProductNotFoundException.class)
+        willThrow(ProductNotFoundException.class)
                 .given(productRepository).getByUuid(any());
 
-        assertThrows(ProductRepository.ProductNotFoundException.class,
+        assertThrows(ProductNotFoundException.class,
                 () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
         );
     }

@@ -13,9 +13,9 @@ public class ProductCategoryRepository implements PanacheRepository<ProductCateg
                 .orElseThrow(() -> new ProductCategoryNotFoundException(name));
     }
 
-    static class ProductCategoryNotFoundException extends RuntimeException {
+    public static class ProductCategoryNotFoundException extends RuntimeException {
         ProductCategoryNotFoundException(String name) {
-            super(String.format("Product category:%s not found", name));
+            super(String.format("Product category: %s not found", name));
         }
     }
 }
