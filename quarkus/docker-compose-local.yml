@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db-local
+    ports:
+      - "4010:5432"
+    environment:
+      - POSTGRES_DB=shop
+      - POSTGRES_USER=shop
+      - POSTGRES_PASSWORD=shop

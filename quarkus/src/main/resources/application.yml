@@ -1,0 +1,24 @@
+quarkus:
+  application:
+    name: shop
+  datasource:
+    db-kind: postgresql
+    username: shop
+    password: shop
+    jdbc:
+      url: jdbc:postgresql://localhost:5432/shop
+  hibernate-orm:
+    database:
+      generation: drop-and-create
+    sql-load-script: META-INF.resources/sql/import.sql
+
+"%test":
+  datasource:
+    db-kind: postgresql
+    username: test
+    password: test
+    jdbc:
+      url: jdbc:postgresql://localhost:5433/test
+    hibernate-orm:
+      database:
+        generation: drop-and-create
