@@ -110,4 +110,66 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
                 .findAllByCategoryName("HOME", sort, 1, 30);
     }
 
+    @Test
+    void update_shouldPassParams() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(aFirstHomeProduct().build());
+        given(productCategoryRepository.getByName(anyString()))
+                .willReturn(aHomeProductCategory().build());
+        given(productRepository.existsByNameAndCategoryName(anyString(), anyString()))
+                .willReturn(false);
+
+        productService.update(PRODUCT_1_UUID, aProductSaveDto()
+                .withCategory("HOME")
+                .withName("New name")
+                .withPrice(new BigDecimal("32.5"))
+                .build()
+        );
+
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+        then(productCategoryRepository).should().getByName("HOME");
+        then(productRepository).should().existsByNameAndCategoryName("New name", "HOME");
+    }
+
+    @Test
+    void update_shouldThrowProductNotFoundException_whenProductNotExist() {
+        willThrow(ProductRepository.ProductNotFoundException.class)
+                .given(productRepository).getByUuid(any());
+
+        assertThrows(ProductRepository.ProductNotFoundException.class,
+                () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
+        );
+    }
+
+    @Test
+    void update_shouldThrowProductCategoryNotFoundException_whenProductCategoryNotExist() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(aFirstHomeProduct().build());
+        willThrow(ProductCategoryNotFoundException.class)
+                .given(productCategoryRepository).getByName(anyString());
+
+        assertThrows(ProductCategoryNotFoundException.class,
+                () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
+        );
+    }
+
+    @Test
+    void update_shouldThrowProductAlreadyExistsException_whenProductWithGivenNameAlreadyExistsInCategory() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(aFirstHomeProduct().build());
+        given(productCategoryRepository.getByName(anyString()))
+                .willReturn(aHomeProductCategory().build());
+        given(productRepository.existsByNameAndCategoryName(anyString(), anyString()))
+                .willReturn(true);
+
+        assertThrows(ProductAlreadyExistsException.class,
+                () -> productService.update(PRODUCT_1_UUID, aProductSaveDto()
+                        .withCategory("HOME")
+                        .withName("New name")
+                        .withPrice(new BigDecimal("32.5"))
+                        .build()
+                )
+        );
+    }
+
 }

@@ -41,12 +41,12 @@ public class ProductService {
     public void update(UUID uuid, ProductSaveDto dto) {
         Product product = productRepository.getByUuid(uuid);
         ProductCategory category = productCategoryRepository.getByName(dto.getCategory());
-        checkIfProductWithGivenNameExistsInCategory(dto);
-        product.update(
-                category,
-                dto.getName(),
-                dto.getPrice()
-        );
+        boolean isNameChanged = !product.getName().equals(dto.getName());
+        boolean isCategoryChanged = !product.getCategory().getName().equals(dto.getCategory());
+        if (isNameChanged || isCategoryChanged) {
+            checkIfProductWithGivenNameExistsInCategory(dto);
+        }
+        product.update(category, dto.getName(), dto.getPrice());
     }
 
     private void checkIfProductWithGivenNameExistsInCategory(ProductSaveDto dto) {
