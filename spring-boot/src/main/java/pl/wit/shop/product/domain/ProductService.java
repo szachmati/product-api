@@ -19,12 +19,13 @@ public class ProductService {
 
     @Transactional
     public void create(ProductSaveDto dto) {
+        ProductCategory category = productCategoryRepository.getByName(dto.getCategory());
         checkIfProductWithGivenNameExistsInCategory(dto);
         productRepository.save(new Product(
-                productCategoryRepository.getByName(dto.getCategory()),
+                category,
                 dto.getName(),
-                dto.getPrice())
-        );
+                dto.getPrice()
+        ));
     }
 
     @Transactional
@@ -40,9 +41,13 @@ public class ProductService {
     @Transactional
     public void update(UUID uuid, ProductSaveDto dto) {
         Product product = productRepository.getByUuid(uuid);
-        ProductCategory productCategory = productCategoryRepository.getByName(dto.getCategory());
-        checkIfProductWithGivenNameExistsInCategory(dto);
-        product.update(productCategory, dto.getName(), dto.getPrice());
+        ProductCategory category = productCategoryRepository.getByName(dto.getCategory());
+        boolean isNameChanged = !product.getName().equals(dto.getName());
+        boolean isCategoryChanged = !product.getCategory().getName().equals(dto.getCategory());
+        if (isNameChanged || isCategoryChanged) {
+            checkIfProductWithGivenNameExistsInCategory(dto);
+        }
+        product.update(category, dto.getName(), dto.getPrice());
     }
 
     private void checkIfProductWithGivenNameExistsInCategory(ProductSaveDto dto) {

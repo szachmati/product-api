@@ -97,6 +97,12 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     }
 
     @Test
+    void delete_shouldThrowProductNotFoundException_whenProductNotExist() {
+        willThrow(ProductRepository.ProductNotFoundException.class)
+                .given()
+    }
+
+    @Test
     void findAllByCategoryName_shouldPassParams() {
         final Sort sort = Sort.by("price").ascending();
         given(productRepository.findAllByCategoryName(any(), any(), anyInt(), anyInt()))

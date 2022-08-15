@@ -78,6 +78,8 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Test
     void create_shouldThrowProductAlreadyExistsException_whenProductWithGivenNameAlreadyExistsInCategory() {
+        given(productCategoryRepository.getByName(anyString()))
+                .willReturn(aHomeProductCategory().build());
         willThrow(ProductAlreadyExistsException.class)
                 .given(productRepository).existsByNameAndCategoryName(anyString(), anyString());
 
@@ -127,14 +129,21 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
                 .willReturn(aFirstHomeProduct().build());
         given(productCategoryRepository.getByName(anyString()))
                 .willReturn(aHomeProductCategory().build());
+        given(productRepository.existsByNameAndCategoryName(anyString(), anyString()))
+                .willReturn(false);
 
-        productService.update(PRODUCT_1_UUID,
-                new ProductSaveDto("Product no 1", "HOME", BigDecimal.TEN)
+        productService.update(PRODUCT_1_UUID, aProductSaveDto()
+                .withCategory("HOME")
+                .withName("New name")
+                .withPrice(new BigDecimal("32.5"))
+                .build()
         );
 
-        then(productCategoryRepository).should().getByName("HOME");
         then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+        then(productCategoryRepository).should().getByName("HOME");
+        then(productRepository).should().existsByNameAndCategoryName("New name", "HOME");
     }
+
 
     @Test
     void update_shouldThrowProductNotFoundException_whenProductNotExist() {
@@ -164,11 +173,16 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
                 .willReturn(aFirstHomeProduct().build());
         given(productCategoryRepository.getByName(anyString()))
                 .willReturn(aHomeProductCategory().build());
-        willThrow(ProductAlreadyExistsException.class)
-                .given(productRepository).existsByNameAndCategoryName(anyString(), anyString());
+        given(productRepository.existsByNameAndCategoryName(anyString(), anyString()))
+                .willReturn(true);
 
         assertThrows(ProductAlreadyExistsException.class,
-                () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
+                () -> productService.update(PRODUCT_1_UUID, aProductSaveDto()
+                        .withCategory("HOME")
+                        .withName("New name")
+                        .withPrice(new BigDecimal("32.5"))
+                        .build()
+                )
         );
     }
 }
