@@ -3,7 +3,6 @@ package pl.wit.shop.product.api;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.junit.jupiter.api.Test;
-import pl.wit.shop.product.domain.ProductCategoryRepository;
 import pl.wit.shop.product.domain.ProductService;
 
 import javax.ws.rs.core.MediaType;
@@ -13,7 +12,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.doNothing;
 import static pl.wit.shop.product.api.ProductInputBuilder.aProductInput;
-
+import static pl.wit.shop.product.domain.ProductCategoryRepository.ProductCategoryNotFoundException;
+import static pl.wit.shop.product.domain.ProductService.ProductAlreadyExistsException;
 
 @QuarkusTest
 public class ProductApiTest {
@@ -37,7 +37,7 @@ public class ProductApiTest {
 
     @Test
     void create_shouldReturn404_whenProductCategoryNotExist() {
-        willThrow(ProductCategoryRepository.ProductCategoryNotFoundException.class)
+        willThrow(new ProductCategoryNotFoundException("msg"))
                 .given(productService).create(any());
 
         given()
@@ -51,7 +51,7 @@ public class ProductApiTest {
 
     @Test
     void create_shouldReturn409_whenProductAlreadyExistsInCategory() {
-        willThrow(ProductService.ProductAlreadyExistsException.class)
+        willThrow(new ProductAlreadyExistsException("product", "HOME"))
                 .given(productService).create(any());
 
         given()

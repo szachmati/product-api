@@ -1,6 +1,7 @@
 package pl.wit.shop.product.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import pl.wit.shop.product.shared.exception.NotFoundException;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -13,8 +14,8 @@ public class ProductCategoryRepository implements PanacheRepository<ProductCateg
                 .orElseThrow(() -> new ProductCategoryNotFoundException(name));
     }
 
-    public static class ProductCategoryNotFoundException extends RuntimeException {
-        ProductCategoryNotFoundException(String name) {
+    public static class ProductCategoryNotFoundException extends NotFoundException {
+        public ProductCategoryNotFoundException(String name) {
             super(String.format("Product category: %s not found", name));
         }
     }

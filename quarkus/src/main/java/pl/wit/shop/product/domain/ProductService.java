@@ -2,6 +2,7 @@ package pl.wit.shop.product.domain;
 
 import io.quarkus.panache.common.Sort;
 import lombok.RequiredArgsConstructor;
+import pl.wit.shop.product.shared.exception.ConflictException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
@@ -55,8 +56,8 @@ public class ProductService {
         }
     }
 
-    public static class ProductAlreadyExistsException extends RuntimeException {
-        ProductAlreadyExistsException(String name, String category) {
+    public static class ProductAlreadyExistsException extends ConflictException {
+        public ProductAlreadyExistsException(String name, String category) {
             super(String.format("Product with name: %s already exists in category: %s", name, category));
         }
     }

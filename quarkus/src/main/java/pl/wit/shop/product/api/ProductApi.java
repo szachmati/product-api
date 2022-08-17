@@ -22,8 +22,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-import static pl.wit.shop.product.domain.ProductCategoryRepository.ProductCategoryNotFoundException;
-import static pl.wit.shop.product.domain.ProductService.ProductAlreadyExistsException;
 
 @Path("/api/products")
 public class ProductApi {
@@ -34,21 +32,8 @@ public class ProductApi {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(@Valid ProductInput input) {
-        try {
-            productService.create(input.toDto());
-            return Response.status(Response.Status.CREATED).build();
-        } catch (ProductCategoryNotFoundException e) {
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage())
-                    .build();
-
-        } catch (ProductAlreadyExistsException e) {
-            return Response
-                    .status(Response.Status.CONFLICT)
-                    .entity(e.getMessage())
-                    .build();
-        }
+        productService.create(input.toDto());
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @GET
