@@ -32,8 +32,8 @@ public class ProductRepository implements PanacheRepositoryBase<Product, Long> {
                 .orElseThrow(() -> new ProductNotFoundException(uuid));
     }
 
-    static class ProductNotFoundException extends NotFoundException {
-        ProductNotFoundException(UUID uuid) {
+    public static class ProductNotFoundException extends NotFoundException {
+        public ProductNotFoundException(UUID uuid) {
             super(String.format("Product with uuid: %s not found", uuid));
         }
     }

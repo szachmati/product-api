@@ -2,6 +2,7 @@ package pl.wit.shop.product.api;
 
 import io.quarkus.panache.common.Sort;
 import lombok.Value;
+import org.jboss.resteasy.reactive.ResponseStatus;
 import pl.wit.shop.product.domain.Product;
 import pl.wit.shop.product.domain.ProductSaveDto;
 import pl.wit.shop.product.domain.ProductService;
@@ -11,13 +12,15 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -31,9 +34,16 @@ public class ProductApi {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(@Valid ProductInput input) {
+    @ResponseStatus(201)
+    public void create(@Valid ProductInput input) {
         productService.create(input.toDto());
-        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @DELETE
+    @Path("{uuid}")
+    @ResponseStatus(200)
+    public void delete(@PathParam("uuid") UUID uuid) {
+        productService.delete(uuid);
     }
 
     @GET
@@ -55,6 +65,14 @@ public class ProductApi {
                 .stream()
                 .map(ProductOutput::from)
                 .toList();
+    }
+
+    @PUT
+    @Path("{uuid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ResponseStatus(200)
+    public void update(@PathParam("uuid") UUID uuid, @Valid ProductInput input) {
+        productService.update(uuid, input.toDto());
     }
 
     public record ProductInput(@NotBlank String name, @NotNull String category, @NotNull BigDecimal price) {
