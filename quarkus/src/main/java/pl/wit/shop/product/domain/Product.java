@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -35,6 +36,7 @@ public class Product {
     private final UUID uuid;
 
     @NotNull
+    @JoinColumn(name = "product_category_id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private ProductCategory category;
 

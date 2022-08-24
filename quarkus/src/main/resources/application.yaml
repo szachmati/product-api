@@ -1,0 +1,22 @@
+"%dev":
+  quarkus:
+    http:
+      port: 8020
+    application:
+      name: Quarkus Shop
+    datasource:
+      db-kind: postgresql
+      username: shop
+      password: shop
+      jdbc:
+        url: jdbc:postgresql://localhost:5432/shop
+    hibernate-orm:
+      database:
+        generation: drop-and-create
+      sql-load-script: META-INF/resources/sql/import.sql
+
+"%test":
+  quarkus:
+    hibernate-orm:
+      database:
+        generation: drop-and-create

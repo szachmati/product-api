@@ -3,9 +3,9 @@ version: "3.7"
 services:
   postgres:
     image: postgres:latest
-    container_name: postgres-db-local
+    container_name: postgres-db-quarkus
     ports:
-      - "4010:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_DB=shop
       - POSTGRES_USER=shop
