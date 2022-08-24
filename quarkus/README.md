@@ -6,6 +6,11 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 
 ## Running the application in dev mode
 
+Before start application make sure docker container with Postgres DB is running.
+To build Postgres DB container run:
+
+``docker compose -f docker-compose-local.yml -d --build``
+
 You can run your application in dev mode that enables live coding using:
 
 ```shell script
@@ -44,7 +49,7 @@ For WindowsOS read instructions from https://www.graalvm.org/22.2/reference-manu
 You can create a native executable using:
 
 ```shell script
-./mvnw package -Pnative
+./mvnw package -Dquarkus.profile=dev -Pnative
 ```
 
 Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
