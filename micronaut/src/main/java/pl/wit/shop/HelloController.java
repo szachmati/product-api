@@ -1,4 +1,4 @@
-package pl.wit;
+package pl.wit.shop;
 
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
