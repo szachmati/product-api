@@ -155,20 +155,42 @@
           <!-- Uncomment to enable incremental compilation -->
           <!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
 
-          <annotationProcessorPaths combine.children="append">
+          <annotationProcessorPaths combine.self="override">
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+            <path>
+              <groupId>io.micronaut</groupId>
+              <artifactId>micronaut-inject-java</artifactId>
+              <version>${micronaut.version}</version>
+            </path>
+            <path>
+              <groupId>io.micronaut.data</groupId>
+              <artifactId>micronaut-data-processor</artifactId>
+              <version>${micronaut.data.version}</version>
+            </path>
+            <path>
+              <groupId>io.micronaut</groupId>
+              <artifactId>micronaut-graal</artifactId>
+              <version>${micronaut.version}</version>
+            </path>
             <path>
               <groupId>io.micronaut</groupId>
               <artifactId>micronaut-http-validation</artifactId>
               <version>${micronaut.version}</version>
             </path>
             <path>
-              <groupId>io.micronaut.data</groupId>
-              <artifactId>micronaut-data-hibernate-jpa</artifactId>
+              <groupId>io.micronaut</groupId>
+              <artifactId>micronaut-validation</artifactId>
+              <version>${micronaut.version}</version>
             </path>
-<!--            <path>-->
-<!--              <groupId>io.micronaut</groupId>-->
-<!--              <artifact>micronaut-inject-java</artifact>-->
-<!--            </path>-->
+            <path>
+              <groupId>io.micronaut.spring</groupId>
+              <artifactId>micronaut-spring-annotation</artifactId>
+              <version>${micronaut.spring.version}</version>
+            </path>
           </annotationProcessorPaths>
           <compilerArgs>
             <arg>-Amicronaut.processing.group=pl.wit</arg>

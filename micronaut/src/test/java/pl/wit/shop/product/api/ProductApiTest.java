@@ -29,7 +29,7 @@ class ProductApiTest implements ProductTestDataIdentifiers {
                 .delete(any());
         spec
                 .when()
-                .delete(PRODUCT_API + "/" + PRODUCT_1_UUID)
+                .delete(PRODUCT_API + "/{uuid}", PRODUCT_1_UUID)
                 .then()
                 .statusCode(200);
     }
@@ -40,7 +40,7 @@ class ProductApiTest implements ProductTestDataIdentifiers {
                 .given(productService).delete(NOT_EXISTING_PRODUCT_UUID);
         spec
                 .when()
-                .delete(PRODUCT_API + "/" + NOT_EXISTING_PRODUCT_UUID)
+                .delete(PRODUCT_API + "/{uuid}", NOT_EXISTING_PRODUCT_UUID)
                 .then()
                 .statusCode(404);
     }
