@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -25,8 +26,9 @@ import static java.util.Objects.requireNonNull;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter(AccessLevel.PRIVATE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "product_seq", sequenceName = "product_seq" , allocationSize = 1)
+    //TODO using @Getter(AccessLevel.PRIVATE) causing problems
     private final Long id;
 
     @NotNull

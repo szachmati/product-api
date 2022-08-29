@@ -1,4 +1,4 @@
-package pl.wit.shop.product.common;
+package pl.wit.shop.common;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;

@@ -11,8 +11,9 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PACKAGE, force = true)
 public class ProductCategory {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter(AccessLevel.PRIVATE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "product_category_seq", sequenceName = "product_category_seq", allocationSize = 1)
+    //TODO @Getter(AccessLevel.PRIVATE) causing problems
     private final Long id;
 
     @Column(unique = true)
