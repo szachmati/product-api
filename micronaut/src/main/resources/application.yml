@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: shop
+  server:
+    port: 8020
 netty:
   default:
     allocator:
@@ -8,10 +10,10 @@ netty:
 
 datasources:
   default:
-    driver-class-name: ${POSTGRES_DRIVER:org.postgresql.Driver}
-    jdbc-url: ${POSTGRES_JDBC_URL:jdbc:postgresql://localhost:4010/shop}
-    username: ${POSTGRES_USER:shop}
-    password: ${POSTGRES_PASSWORD:shop}
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:4010/shop
+    username: shop
+    password: shop
     schema-generate: CREATE_DROP
     dialect: POSTGRES
 
