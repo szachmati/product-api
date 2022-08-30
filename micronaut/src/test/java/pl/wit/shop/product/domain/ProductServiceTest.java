@@ -5,27 +5,81 @@ import io.micronaut.data.model.Pageable;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
+import java.math.BigDecimal;
+
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
+import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
 import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
+import static pl.wit.shop.product.domain.ProductSaveDtoBuilder.aProductSaveDto;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Mock
+    private ProductCategoryRepository productCategoryRepository;
+    @Mock
     private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
+
+    @Test
+    void create_shouldPassParams() {
+        given(productCategoryRepository.getByName(any()))
+                .willReturn(aHomeProductCategory().build());
+        given(productRepository.existsByNameAndCategoryName(any(), any()))
+                .willReturn(false);
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+        productService.create(aProductSaveDto().build());
+
+        then(productCategoryRepository).should().getByName("HOME");
+        then(productRepository).should().existsByNameAndCategoryName("Home product", "HOME");
+        then(productRepository).should().save(productArgumentCaptor.capture());
+        assertThat(productArgumentCaptor.getValue(), pojo(Product.class)
+                .withProperty("name", is("Home product"))
+                .withProperty("price", is(BigDecimal.ONE))
+                .withProperty("uuid", notNullValue())
+                .where("getCategory", pojo(ProductCategory.class)
+                        .withProperty("name", is("HOME"))
+                )
+        );
+    }
+
+    @Test
+    void create_shouldThrowProductCategoryNotFoundException_whenProductCategoryNotExist() {
+        willThrow(ProductCategoryRepository.ProductCategoryNotFoundException.class)
+                .given(productCategoryRepository).getByName(anyString());
+
+        assertThrows(ProductCategoryRepository.ProductCategoryNotFoundException.class,
+                () -> productService.create(aProductSaveDto().build())
+        );
+    }
+
+    @Test
+    void create_shouldThrowProductAlreadyExistsException_whenProductWithGivenNameAlreadyExistsInCategory() {
+        willThrow(ProductService.ProductAlreadyExistsException.class)
+                .given(productRepository).existsByNameAndCategoryName(anyString(), anyString());
+
+        assertThrows(ProductService.ProductAlreadyExistsException.class,
+                () -> productService.create(aProductSaveDto().build())
+        );
+    }
 
 
     @Test

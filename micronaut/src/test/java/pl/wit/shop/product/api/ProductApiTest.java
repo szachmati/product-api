@@ -3,12 +3,14 @@ package pl.wit.shop.product.api;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
+import io.micronaut.http.MediaType;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.restassured.specification.RequestSpecification;
 import jakarta.inject.Inject;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import pl.wit.shop.product.domain.ProductCategoryRepository;
 import pl.wit.shop.product.domain.ProductService;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
@@ -22,6 +24,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 
+import static pl.wit.shop.product.api.ProductInputBuilder.aProductInput;
 import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
 
 @MicronautTest
@@ -31,6 +34,47 @@ class ProductApiTest implements ProductTestDataIdentifiers {
 
     @Inject
     ProductService productService;
+
+    @Test
+    void create_shouldReturn201(RequestSpecification spec) {
+        doNothing().when(productService).create(any());
+
+        spec
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(aProductInput().build())
+                .when()
+                .post(PRODUCT_API)
+                .then()
+                .statusCode(201);
+    }
+
+    @Test
+    void create_shouldReturn404_whenProductCategoryNotExist(RequestSpecification spec) {
+        willThrow(new ProductCategoryRepository.ProductCategoryNotFoundException("msg"))
+                .given(productService).create(any());
+
+        spec
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(aProductInput().build())
+                .when()
+                .post(PRODUCT_API)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    void create_shouldReturn409_whenProductAlreadyExistsInCategory(RequestSpecification spec) {
+        willThrow(new ProductService.ProductAlreadyExistsException("product", "HOME"))
+                .given(productService).create(any());
+
+        spec
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(aProductInput().build())
+                .when()
+                .post(PRODUCT_API)
+                .then()
+                .statusCode(409);
+    }
 
     @Test
     void delete_shouldReturn200(RequestSpecification spec) {

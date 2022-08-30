@@ -4,11 +4,12 @@ import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.http.annotation.Produces;
+import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.http.annotation.Status;
 import jakarta.inject.Inject;
@@ -30,6 +31,12 @@ public class ProductApi {
     @Inject
     private ProductService productService;
 
+    @Post(consumes = MediaType.APPLICATION_JSON)
+    @Status(HttpStatus.CREATED)
+    public void create(@Body ProductInput productInput) {
+        productService.create(productInput.toDto());
+    }
+
     @Delete("{uuid}")
     @Status(HttpStatus.OK)
     public void delete(@PathVariable UUID uuid) {
@@ -38,7 +45,7 @@ public class ProductApi {
 
     @Get(produces = MediaType.APPLICATION_JSON)
     @Status(HttpStatus.OK)
-    public Page<ProductOutput> findAllByCategoryName(@QueryValue("category") String category, Pageable pageable) {
+    public Page<ProductOutput> findAllByCategoryName(@QueryValue(value = "category", defaultValue = "HOME") String category, Pageable pageable) {
         return productService.findAllProductsInCategory(category, pageable)
                 .map(ProductOutput::from);
     }

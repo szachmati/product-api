@@ -13,6 +13,8 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long> {
 
+    boolean existsByNameAndCategoryName(String name, String category);
+
     Optional<Product> findByUuid(UUID uuid);
 
     @Query(value = "SELECT product_ FROM Product product_ " +
