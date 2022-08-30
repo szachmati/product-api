@@ -6,6 +6,7 @@ import io.micronaut.data.model.Sort;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import pl.wit.shop.product.test.base.PostgresContainer;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 import java.math.BigDecimal;
@@ -22,7 +23,7 @@ import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCate
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.anElectronicsProductCategory;
 
 @MicronautTest
-class ProductRepositoryTest implements ProductTestDataIdentifiers {
+class ProductRepositoryTest extends PostgresContainer implements ProductTestDataIdentifiers {
 
     @Inject
     private ProductRepository productRepository;
