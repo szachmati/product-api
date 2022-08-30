@@ -1,5 +1,7 @@
 package pl.wit.shop.product.domain;
 
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -18,4 +20,7 @@ public class ProductService {
         productRepository.delete(product);
     }
 
+    public Page<Product> findAllProductsInCategory(String category, Pageable pageable) {
+        return productRepository.findAllProductsInCategory(category, pageable);
+    }
 }

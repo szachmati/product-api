@@ -1,5 +1,8 @@
 package pl.wit.shop.product.domain;
 
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -7,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -43,6 +47,17 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductNotFoundException.class,
                 () -> productService.delete(NOT_EXISTING_PRODUCT_UUID)
         );
+    }
+
+    @Test
+    void findAllProductsInCategory_shouldPassParams() {
+        given(productRepository.findAllProductsInCategory(any(), any()))
+                .willReturn(Page.empty());
+
+        Page<Product> result = productService.findAllProductsInCategory("HOME", Pageable.from(0, 5));
+
+        assertThat(result.getContent(), Matchers.empty());
+        then(productRepository).should().findAllProductsInCategory("HOME", Pageable.from(0, 5));
     }
 
 }
