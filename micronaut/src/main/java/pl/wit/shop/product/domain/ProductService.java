@@ -39,6 +39,18 @@ public class ProductService {
         return productRepository.findAllProductsInCategory(category, pageable);
     }
 
+    @Transactional
+    public void update(UUID uuid, ProductSaveDto dto) {
+        Product product = productRepository.getByUuid(uuid);
+        ProductCategory category = productCategoryRepository.getByName(dto.getCategory());
+        boolean isNameChanged = !product.getName().equals(dto.getName());
+        boolean isCategoryChanged = !product.getCategory().getName().equals(dto.getCategory());
+        if (isNameChanged || isCategoryChanged) {
+            checkIfProductWithGivenNameExistsInCategory(dto);
+        }
+        product.update(category, dto.getName(), dto.getPrice());
+    }
+
     private void checkIfProductWithGivenNameExistsInCategory(ProductSaveDto dto) {
         if (productRepository.existsByNameAndCategoryName(dto.getName(), dto.getCategory())) {
             throw new ProductAlreadyExistsException(dto.getName(), dto.getCategory());

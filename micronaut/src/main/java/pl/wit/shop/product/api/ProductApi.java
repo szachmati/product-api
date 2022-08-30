@@ -10,6 +10,7 @@ import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.http.annotation.Status;
 import jakarta.inject.Inject;
@@ -48,6 +49,11 @@ public class ProductApi {
     public Page<ProductOutput> findAllByCategoryName(@QueryValue(value = "category", defaultValue = "HOME") String category, Pageable pageable) {
         return productService.findAllProductsInCategory(category, pageable)
                 .map(ProductOutput::from);
+    }
+
+    @Put(value = "{uuid}", consumes = MediaType.APPLICATION_JSON)
+    public void update(@PathVariable UUID uuid, @Body ProductInput productInput) {
+        productService.update(uuid, productInput.toDto());
     }
 
 

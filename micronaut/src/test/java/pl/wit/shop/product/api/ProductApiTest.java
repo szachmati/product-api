@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.product.domain.ProductCategoryRepository;
+import pl.wit.shop.product.domain.ProductRepository;
 import pl.wit.shop.product.domain.ProductService;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
@@ -122,6 +123,61 @@ class ProductApiTest implements ProductTestDataIdentifiers {
         assertThat(result.isEmpty(), Matchers.is(true));
         then(productService).should()
                 .findAllProductsInCategory("HOME", Pageable.from(2, 5, Sort.of(Sort.Order.desc("name"))));
+    }
+
+    @Test
+    void update_shouldReturn200(RequestSpecification spec) {
+        doNothing().when(productService).update(any(), any());
+
+        spec
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(aProductInput().build())
+                .when()
+                .put(PRODUCT_API + "/{uuid}", PRODUCT_1_UUID)
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    void update_shouldReturn404_whenProductNotExist(RequestSpecification spec) {
+        willThrow(new ProductRepository.ProductNotFoundException(PRODUCT_1_UUID))
+                .given(productService).update(any(), any());
+
+       spec
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(aProductInput().build())
+                .when()
+                .put(PRODUCT_API + "/{uuid}", PRODUCT_1_UUID)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    void update_shouldReturn404_whenProductCategoryNotExist(RequestSpecification spec) {
+        willThrow(new ProductCategoryRepository.ProductCategoryNotFoundException("HOME"))
+                .given(productService).update(any(), any());
+
+        spec
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(aProductInput().build())
+                .when()
+                .put(PRODUCT_API + "/{uuid}", PRODUCT_1_UUID)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    void update_shouldReturn409_whenProductNameAlreadyExistsInCategory(RequestSpecification spec) {
+        willThrow(new ProductService.ProductAlreadyExistsException("prod1", "HOME"))
+                .given(productService).update(any(), any());
+
+        spec
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(aProductInput().build())
+                .when()
+                .put(PRODUCT_API + "/{uuid}", PRODUCT_1_UUID)
+                .then()
+                .statusCode(409);
     }
 
     @MockBean(ProductService.class)
