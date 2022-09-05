@@ -18,7 +18,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     Optional<Product> findByUuid(UUID uuid);
 
     @Query(value = "SELECT product_ FROM Product product_ " +
-            "INNER JOIN product_.category product_category_ " +
+            "INNER JOIN FETCH product_.category product_category_ " +
             "WHERE product_category_.name = :category",
             countQuery = "SELECT count(product_) FROM Product product_ " +
                     "WHERE product_.category.name = :category"
