@@ -23,7 +23,7 @@ import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCate
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.anElectronicsProductCategory;
 
 @MicronautTest
-class ProductRepositoryTest extends PostgresContainer implements ProductTestDataIdentifiers {
+class ProductRepositoryTest implements ProductTestDataIdentifiers {
 
     @Inject
     private ProductRepository productRepository;
