@@ -121,10 +121,12 @@ class ProductApiIntegrationTest implements ProductTestDataIdentifiers {
         List<ProductOutput> content = result.getContent().stream().map(this::mapToProductOutput).toList();
         assertThat(content, contains(
                 pojo(ProductOutput.class)
+                        .withProperty("uuid", is(PRODUCT_2_UUID))
                         .withProperty("name", is("Second home product"))
                         .withProperty("price", is(new BigDecimal("30.87")))
                         .withProperty("category", is("HOME")),
                 pojo(ProductOutput.class)
+                        .withProperty("uuid", is(PRODUCT_1_UUID))
                         .withProperty("name", is("Home product"))
                         .withProperty("price", is(new BigDecimal("1.0"))) //TODO
                         .withProperty("category", is("HOME"))
