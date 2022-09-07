@@ -104,7 +104,8 @@ class ProductApiIntegrationTest implements ProductTestDataIdentifiers {
         HttpRequest<String> request = HttpRequest.GET(
                 UriBuilder.of("")
                         .queryParam("category", "HOME")
-                        .queryParam("sort", "price,desc")
+                        .queryParam("sort", "price")
+                        .queryParam("direction", "DESC")
                         .queryParam("page", "0")
                         .queryParam("size", "8")
                         .build()

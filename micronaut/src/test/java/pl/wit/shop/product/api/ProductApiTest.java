@@ -108,7 +108,8 @@ class ProductApiTest implements ProductTestDataIdentifiers {
                 .when()
                 .queryParams(Map.of(
                         "category", "HOME",
-                        "sort", "name,desc",
+                        "sort", "name",
+                        "direction", "DESC",
                         "page", "2",
                         "size", "5"
                 ))
