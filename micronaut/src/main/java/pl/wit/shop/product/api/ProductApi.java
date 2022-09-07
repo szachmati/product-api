@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import pl.wit.shop.product.domain.Product;
@@ -39,8 +38,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductApi {
 
-    @Inject
-    private ProductService productService;
+    private final ProductService productService;
 
     @Operation(summary = "Create product")
     @ApiResponses({

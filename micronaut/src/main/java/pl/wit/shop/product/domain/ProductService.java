@@ -2,21 +2,19 @@ package pl.wit.shop.product.domain;
 
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import pl.wit.shop.shared.exception.ConflictException;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Singleton
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Inject
-    private ProductRepository productRepository;
-
-    @Inject
-    private ProductCategoryRepository productCategoryRepository;
+    private final ProductRepository productRepository;
+    private final ProductCategoryRepository productCategoryRepository;
 
     @Transactional
     public void create(ProductSaveDto dto) {
