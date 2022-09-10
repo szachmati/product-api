@@ -129,6 +129,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+            <version>2.11.2.Final</version>
+        </dependency>
+
     </dependencies>
 
     <build>
