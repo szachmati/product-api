@@ -1,4 +1,4 @@
-package pl.wit.shop.product;
+package pl.wit.shop;
 
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.annotations.QuarkusMain;

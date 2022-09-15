@@ -1,4 +1,4 @@
-package pl.wit.shop.product.shared.exception;
+package pl.wit.shop.shared.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

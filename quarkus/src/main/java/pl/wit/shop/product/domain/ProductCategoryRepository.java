@@ -1,7 +1,7 @@
 package pl.wit.shop.product.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import pl.wit.shop.product.shared.exception.NotFoundException;
+import pl.wit.shop.shared.exception.NotFoundException;
 
 import javax.enterprise.context.ApplicationScoped;
 

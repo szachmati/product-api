@@ -2,7 +2,7 @@ package pl.wit.shop.product.domain;
 
 import io.quarkus.panache.common.Sort;
 import lombok.RequiredArgsConstructor;
-import pl.wit.shop.product.shared.exception.ConflictException;
+import pl.wit.shop.shared.exception.ConflictException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;

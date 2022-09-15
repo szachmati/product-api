@@ -1,7 +1,7 @@
-package pl.wit.shop.product.common;
+package pl.wit.shop.common;
 
-import pl.wit.shop.product.shared.exception.BaseException;
-import pl.wit.shop.product.shared.exception.ResponseError;
+import pl.wit.shop.shared.exception.BaseException;
+import pl.wit.shop.shared.exception.ResponseError;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
