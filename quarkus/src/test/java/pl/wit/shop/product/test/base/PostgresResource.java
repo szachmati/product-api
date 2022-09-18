@@ -11,10 +11,11 @@ import java.util.Map;
 public class PostgresResource implements QuarkusTestResourceLifecycleManager {
 
     private static final PostgreSQLContainer<?> POSTGRE_SQL_CONTAINER =
-            new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
+            new PostgreSQLContainer<>(DockerImageName.parse("postgres:14.5"))
                     .withDatabaseName("shop")
                     .withUsername("shop")
-                    .withPassword("shop");
+                    .withPassword("shop")
+                    .withReuse(true);
 
     @Override
     public Map<String, String> start() {
