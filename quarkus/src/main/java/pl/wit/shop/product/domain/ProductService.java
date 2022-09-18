@@ -19,12 +19,12 @@ public class ProductService {
 
     @Transactional
     public void create(ProductSaveDto dto) {
-        ProductCategory category = productCategoryRepository.getByName(dto.getCategory());
+        ProductCategory category = productCategoryRepository.getByName(dto.category());
         checkIfProductWithGivenNameExistsInCategory(dto);
         productRepository.persistAndFlush(new Product(
                 category,
-                dto.getName(),
-                dto.getPrice()
+                dto.name(),
+                dto.price()
         ));
     }
 
@@ -41,18 +41,18 @@ public class ProductService {
     @Transactional
     public void update(UUID uuid, ProductSaveDto dto) {
         Product product = productRepository.getByUuid(uuid);
-        ProductCategory category = productCategoryRepository.getByName(dto.getCategory());
-        boolean isNameChanged = !product.getName().equals(dto.getName());
-        boolean isCategoryChanged = !product.getCategory().getName().equals(dto.getCategory());
+        ProductCategory category = productCategoryRepository.getByName(dto.category());
+        boolean isNameChanged = !product.getName().equals(dto.name());
+        boolean isCategoryChanged = !product.getCategory().getName().equals(dto.category());
         if (isNameChanged || isCategoryChanged) {
             checkIfProductWithGivenNameExistsInCategory(dto);
         }
-        product.update(category, dto.getName(), dto.getPrice());
+        product.update(category, dto.name(), dto.price());
     }
 
     private void checkIfProductWithGivenNameExistsInCategory(ProductSaveDto dto) {
-        if (productRepository.existsByNameAndCategoryName(dto.getName(), dto.getCategory())) {
-            throw new ProductAlreadyExistsException(dto.getName(), dto.getCategory());
+        if (productRepository.existsByNameAndCategoryName(dto.name(), dto.category())) {
+            throw new ProductAlreadyExistsException(dto.name(), dto.category());
         }
     }
 

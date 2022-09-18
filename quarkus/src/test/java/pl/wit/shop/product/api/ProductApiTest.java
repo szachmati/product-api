@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.doNothing;
@@ -35,15 +36,16 @@ public class ProductApiTest implements ProductTestDataIdentifiers {
     @Test
     void create_shouldReturn201() {
         doNothing().when(productService).create(any());
+        final ProductApi.ProductInput input = aProductInput().build();
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(aProductInput().build())
+                .body(input)
         .when()
                 .post(PRODUCT_API)
         .then()
                 .statusCode(201);
-
+        then(productService).should().create(input.toDto());
     }
 
     @Test
@@ -83,6 +85,7 @@ public class ProductApiTest implements ProductTestDataIdentifiers {
                 .delete(PRODUCT_API + "/{uuid}", PRODUCT_1_UUID)
         .then()
                 .statusCode(200);
+        then(productService).should().delete(PRODUCT_1_UUID);
     }
 
     @Test
@@ -121,14 +124,16 @@ public class ProductApiTest implements ProductTestDataIdentifiers {
     @Test
     void update_shouldReturn200() {
         doNothing().when(productService).update(any(), any());
+        ProductApi.ProductInput input = aProductInput().build();
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(aProductInput().build())
+                .body(input)
         .when()
                 .put(PRODUCT_API + "/{uuid}", PRODUCT_1_UUID)
         .then()
                 .statusCode(200);
+        then(productService).should().update(PRODUCT_1_UUID, input.toDto());
     }
 
     @Test
