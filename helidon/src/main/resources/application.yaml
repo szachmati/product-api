@@ -1,0 +1,12 @@
+server:
+  port: 8040
+
+javax:
+  sql:
+    DataSource:
+      shopDataSource:
+        dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
+        dataSource:
+          url: jdbc:postgresql://localhost:4040/shop
+          user: shop
+          password: shop
