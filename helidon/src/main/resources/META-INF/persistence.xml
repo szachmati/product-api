@@ -4,10 +4,11 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
                              https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="greeeting" transaction-type="JTA">
-        <description>A persistence unit for the greeting example/</description>
-        <jta-data-source>greetingDataSource</jta-data-source>
-        <class>pl.wit.shop.example.Greeting</class>
+    <persistence-unit  name="shopDataSource" transaction-type="JTA">
+        <description>A persistence unit for the product dn</description>
+        <jta-data-source>shopDataSource</jta-data-source>
+        <class>pl.wit.shop.product.domain.Product</class>
+        <class>pl.wit.shop.product.domain.ProductCategory</class>
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="eclipselink.deploy-on-startup" value="true"/>

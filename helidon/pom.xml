@@ -14,6 +14,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <mainClass>pl.wit.shop.Main</mainClass>
         <java.version>18</java.version>
         <lombok.version>1.18.24</lombok.version>
         <postgres.version>42.5.0</postgres.version>
@@ -148,6 +149,51 @@
                 <executions>
                     <execution>
                         <id>make-index</id>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <annotationProcessorPaths>
+                                <annotationProcessorPath>
+                                    <groupId>org.hibernate.orm</groupId>
+                                    <artifactId>hibernate-jpamodelgen</artifactId>
+                                    <version>${hibernate-jpamodelgen.version}</version>
+                                </annotationProcessorPath>
+                            </annotationProcessorPaths>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>weave</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration combine.self="override">
+                            <classpathScope>compile</classpathScope>
+                            <mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
+                            <arguments>
+                                <argument>-loglevel</argument>
+                                <argument>INFO</argument>
+                                <argument>-persistenceinfo</argument>
+                                <argument>${project.build.outputDirectory}</argument>
+                                <argument>${project.build.outputDirectory}</argument>
+                                <argument>${project.build.outputDirectory}</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

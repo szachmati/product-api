@@ -1,20 +1,13 @@
-package pl.wit.shop.example;
+package pl.wit.shop.product.domain;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-import java.util.List;
-
 @ApplicationScoped
-class GreetingService {
-
-
+public class ProductRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    List<Greeting> getAll() {
-        return entityManager.createQuery("SELECT g FROM Greeting g")
-                .getResultList();
-    }
+
 }
