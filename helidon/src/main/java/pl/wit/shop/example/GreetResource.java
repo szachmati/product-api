@@ -33,7 +33,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
  *
  * The message is returned as a JSON object.
  */
-@Path("/greet")
+@Path("/greet-old")
 @RequestScoped
 public class GreetResource {
 

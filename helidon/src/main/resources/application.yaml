@@ -4,9 +4,15 @@ server:
 javax:
   sql:
     DataSource:
-      shopDataSource:
+      greetingDataSource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
         dataSource:
           url: jdbc:postgresql://localhost:4040/shop
           user: shop
           password: shop
+#      shopDataSource:
+#        dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
+#        dataSource:
+#          url: jdbc:postgresql://localhost:4040/shop
+#          user: shop
+#          password: shop
