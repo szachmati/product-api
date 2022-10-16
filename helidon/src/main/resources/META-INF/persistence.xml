@@ -5,19 +5,16 @@
                              https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
     <persistence-unit  name="shopDataSource" transaction-type="JTA">
-        <description>A persistence unit for the product dn</description>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>shopDataSource</jta-data-source>
         <class>pl.wit.shop.product.domain.Product</class>
         <class>pl.wit.shop.product.domain.ProductCategory</class>
         <properties>
-            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="eclipselink.deploy-on-startup" value="true"/>
-            <property name="eclipselink.jdbc.native-sql" value="true"/>
-            <property name="eclipselink.logging.logger" value="JavaLogger"/>
-            <property name="eclipselink.logging.parameters" value="true"/>
-            <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.PostgreSQLPlatform"/>
-            <property name="eclipselink.target-server" value="io.helidon.integrations.cdi.eclipselink.CDISEPlatform"/>
-            <property name="eclipselink.weaving" value="false"/>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
         </properties>
     </persistence-unit>
 </persistence>
