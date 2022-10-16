@@ -14,6 +14,10 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <java.version>18</java.version>
+        <lombok.version>1.18.24</lombok.version>
+        <postgres.version>42.5.0</postgres.version>
+        <hibernate-jpamodelgen.version>6.1.1.Final</hibernate-jpamodelgen.version>
     </properties>
 
     <dependencies>
@@ -90,7 +94,13 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.0</version>
+            <version>${postgres.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!--   test   -->
@@ -141,52 +151,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <configuration>
-                            <annotationProcessorPaths>
-                                <annotationProcessorPath>
-                                    <groupId>org.hibernate.orm</groupId>
-                                    <artifactId>hibernate-jpamodelgen</artifactId>
-                                    <version>6.1.1.Final</version>
-                                </annotationProcessorPath>
-                            </annotationProcessorPaths>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.hibernate.orm.tooling</groupId>
-                <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                <!--
-                    Ideally, your plugin versions are managed via a
-                    <pluginManagement> element, which is why the <version> element
-                    is commented out below.  If, nevertheless, you opt for the
-                    explicit version, check
-                    https://search.maven.org/artifact/org.hibernate.orm/hibernate-enhance-maven-plugin
-                    for up-to-date versions, and make sure the version is the same
-                    as that of Hibernate ORM itself.
-                -->
-                <!-- <version>6.1.1.Final</version> -->
-                <executions>
-                    <execution>
-                        <id>Statically enhance JPA entities for Hibernate</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>enhance</goal>
-                        </goals>
-                        <configuration>
-                            <failOnError>true</failOnError>
-                            <enableDirtyTracking>true</enableDirtyTracking>
-                            <enableLazyInitialization>true</enableLazyInitialization>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
