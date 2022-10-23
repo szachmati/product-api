@@ -1,13 +1,22 @@
 package pl.wit.shop.product.domain;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import pl.wit.shop.common.repository.BaseRepository;
 
-@ApplicationScoped
-public class ProductRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+import java.util.List;
+import java.util.function.Supplier;
 
+public interface ProductRepository extends BaseRepository<Product> {
 
+    List<Product> findAllProductsInCategory(String category);
+
+    @Override
+    default Supplier<NotFoundException> notFoundException(String cause) {
+        return () -> new ProductNotFoundException(cause);
+    }
+
+    class ProductNotFoundException extends NotFoundException {
+        public ProductNotFoundException(String cause) {
+            super(cause);
+        }
+    }
 }
