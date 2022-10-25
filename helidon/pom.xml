@@ -25,6 +25,7 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <byte-buddy.version>1.12.12</byte-buddy.version>
         <common-lang3.version>3.12.0</common-lang3.version>
+        <hamcrest-matcher-generator-annotationprocessor.version>4.2.5</hamcrest-matcher-generator-annotationprocessor.version>
     </properties>
 
     <dependencies>
@@ -148,6 +149,12 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.marmer.testutils</groupId>
+            <artifactId>hamcrest-matcher-generator-annotationprocessor</artifactId>
+            <version>${hamcrest-matcher-generator-annotationprocessor.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -197,6 +204,20 @@
 
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.github.marmer.testutils</groupId>
+                            <artifactId>hamcrest-matcher-generator-annotationprocessor</artifactId>
+                            <version>${hamcrest-matcher-generator-annotationprocessor.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
                 <executions>
                     <execution>
                         <id>default-compile</id>

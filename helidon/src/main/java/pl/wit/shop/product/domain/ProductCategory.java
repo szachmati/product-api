@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PACKAGE, force = true)
 public class ProductCategory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "product_category_seq", sequenceName = "product_category_seq", allocationSize = 1)

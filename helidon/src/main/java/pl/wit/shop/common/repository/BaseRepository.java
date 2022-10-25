@@ -1,5 +1,7 @@
 package pl.wit.shop.common.repository;
 
+import pl.wit.shop.shared.exception.NotFoundException;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,7 +14,7 @@ import java.util.function.Supplier;
 
 public interface BaseRepository<E> {
 
-    EntityManager entityManager();
+    EntityManager getEntityManager();
 
     Supplier<NotFoundException> notFoundException(String cause);
 
@@ -21,20 +23,20 @@ public interface BaseRepository<E> {
     }
 
     default void delete(E entity) {
-        entityManager().remove(entity);
+        getEntityManager().remove(entity);
     }
 
     default List<E> findAll() {
-        CriteriaBuilder criteria = entityManager().getCriteriaBuilder();
+        CriteriaBuilder criteria = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<E> cq = (CriteriaQuery<E>) criteria.createQuery();
         Root<E> root = cq.from(clazz());
         CriteriaQuery<E> query = cq.select(root);
-        return entityManager().createQuery(query).getResultList();
+        return getEntityManager().createQuery(query).getResultList();
     }
 
     default Optional<E> findByUuid(UUID uuid) {
         try {
-            return Optional.ofNullable((E) entityManager().find(clazz(), uuid));
+            return Optional.ofNullable((E) getEntityManager().find(clazz(), uuid));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -45,16 +47,10 @@ public interface BaseRepository<E> {
     }
 
     default E save(E entity) {
-        if (entityManager().contains(entity)) {
-            return entityManager().merge(entity);
+        if (getEntityManager().contains(entity)) {
+            return getEntityManager().merge(entity);
         }
-        entityManager().persist(entity);
+        getEntityManager().persist(entity);
         return entity;
-    }
-
-    class NotFoundException extends RuntimeException {
-        public NotFoundException(String cause) {
-            super(cause);
-        }
     }
 }
