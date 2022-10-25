@@ -3,10 +3,12 @@ package pl.wit.shop.product.domain;
 import pl.wit.shop.common.repository.BaseRepository;
 import pl.wit.shop.shared.exception.NotFoundException;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface ProductCategoryRepository extends BaseRepository<ProductCategory> {
 
+    Optional<ProductCategory> findByName(String name);
     ProductCategory getByName(String name);
 
     @Override
