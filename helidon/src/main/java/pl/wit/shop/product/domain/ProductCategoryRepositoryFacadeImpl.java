@@ -1,5 +1,6 @@
 package pl.wit.shop.product.domain;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.Getter;
 
 import javax.persistence.EntityManager;
@@ -9,7 +10,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
 
-public class ProductCategoryRepositoryImpl implements ProductCategoryRepository {
+@ApplicationScoped
+public class ProductCategoryRepositoryFacadeImpl implements ProductCategoryRepository {
 
     @Getter
     @PersistenceContext

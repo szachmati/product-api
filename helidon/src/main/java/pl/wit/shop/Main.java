@@ -18,7 +18,6 @@ public class Main {
 
     private static Config buildConfig() {
         return Config.builder()
-                .disableSystemPropertiesSource()
                 .sources(
                         classpath("application.yaml"),
                         classpath("META-INF/microprofile-config.properties")
