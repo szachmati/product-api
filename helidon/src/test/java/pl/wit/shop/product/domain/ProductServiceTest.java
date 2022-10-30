@@ -104,6 +104,26 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     }
 
     @Test
+    void getProduct_shouldPassParams() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(aFirstHomeProduct().build());
+
+        Product product = productService.getProduct(PRODUCT_1_UUID);
+
+        assertThat(product.getUuid(), is(PRODUCT_1_UUID));
+    }
+
+    @Test
+    void getProduct_shouldThrowProductNotFoundException_whenProductNotExist() {
+        willThrow(ProductRepository.ProductNotFoundException.class)
+                .given(productRepository).getByUuid(any());
+
+        assertThrows(ProductRepository.ProductNotFoundException.class,
+                () -> productService.getProduct(PRODUCT_1_UUID)
+        );
+    }
+
+    @Test
     void update_shouldPassParams() {
         given(productRepository.getByUuid(any()))
                 .willReturn(aFirstHomeProduct().build());

@@ -10,10 +10,12 @@
         <class>pl.wit.shop.product.domain.Product</class>
         <class>pl.wit.shop.product.domain.ProductCategory</class>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.format_sql" value="true" />
-            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+<!--            TODO uncomment below after tests -->
+<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />-->
+<!--            <property name="hibernate.show_sql" value="true" />-->
+<!--            <property name="hibernate.format_sql" value="true" />-->
+<!--            <property name="hibernate.hbm2ddl.auto" value="create-drop" />-->
+<!--            <property name="jakarta.persistence.sql-load-script-source" value="init.sql"/>-->
         </properties>
     </persistence-unit>
 </persistence>

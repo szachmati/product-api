@@ -19,7 +19,7 @@ public interface ProductCategoryRepository extends BaseRepository<ProductCategor
     @Override
     default Class<ProductCategory> clazz() {
         return ProductCategory.class;
-    };
+    }
 
     class ProductCategoryNotFoundException extends NotFoundException {
        public ProductCategoryNotFoundException(String name) {
