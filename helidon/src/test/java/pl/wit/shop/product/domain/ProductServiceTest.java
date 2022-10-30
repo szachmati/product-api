@@ -22,6 +22,8 @@ import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
 import static org.hamcrest.Matchers.is;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
+import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategory;
+import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 import static pl.wit.shop.product.domain.ProductSaveDtoBuilder.aProductSaveDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,10 +48,10 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
         then(productCategoryRepository).should().getByName("HOME");
         then(productRepository).should().save(argThat(
-                ProductMatcher.isProduct()
+                isProduct()
                         .withUuid(notNullValue())
                         .withCategory(
-                                ProductCategoryMatcher.isProductCategory()
+                                isProductCategory()
                                         .withName("HOME")
                         )
                         .withName("Home product")

@@ -1,11 +1,12 @@
 package pl.wit.shop.common.repository;
 
+import jakarta.transaction.Transactional;
 import pl.wit.shop.shared.exception.NotFoundException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ public interface BaseRepository<E> {
         return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
+    @Transactional
     default void delete(E entity) {
         getEntityManager().remove(entity);
     }
@@ -46,11 +48,14 @@ public interface BaseRepository<E> {
         return findByUuid(uuid).orElseThrow(notFoundException(uuid.toString()));
     }
 
+    @Transactional
     default E save(E entity) {
-        if (getEntityManager().contains(entity)) {
-            return getEntityManager().merge(entity);
+        final EntityManager em = getEntityManager();
+        if (em.contains(entity)) {
+            return em.merge(entity);
         }
-        getEntityManager().persist(entity);
+        em.persist(entity);
+        em.flush();
         return entity;
     }
 }

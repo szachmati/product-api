@@ -3,12 +3,12 @@ package pl.wit.shop.product.domain;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.Getter;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
 import java.util.List;
 
 @ApplicationScoped
@@ -26,7 +26,7 @@ public class ProductRepositoryFacadeImpl implements ProductRepository {
         root.fetch("category", JoinType.INNER);
         query.select(root).where(cb.and(
                 cb.equal(root.get("name"), productName),
-                cb.equal(root.get("category.name"), categoryName))
+                cb.equal(root.get("category").get("name"), categoryName))
         );
         try {
             entityManager.createQuery(query).getSingleResult();

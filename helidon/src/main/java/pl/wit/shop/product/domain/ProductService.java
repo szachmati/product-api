@@ -1,10 +1,9 @@
 package pl.wit.shop.product.domain;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import jakarta.transaction.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Singleton

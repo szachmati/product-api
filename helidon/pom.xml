@@ -26,6 +26,8 @@
         <byte-buddy.version>1.12.12</byte-buddy.version>
         <common-lang3.version>3.12.0</common-lang3.version>
         <hamcrest-matcher-generator-annotationprocessor.version>4.2.5</hamcrest-matcher-generator-annotationprocessor.version>
+        <glassfish-expressly.version>5.0.0</glassfish-expressly.version>
+        <testcontainers.version>1.17.4</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -65,6 +67,7 @@
         <dependency>
             <groupId>io.helidon.integrations.cdi</groupId>
             <artifactId>helidon-integrations-cdi-jpa</artifactId>
+            <version>3.0.2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -73,21 +76,24 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>${javax.persistence-api.version}</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>javax.transaction-api</artifactId>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
             <scope>compile</scope>
-            <version>${javax.transaction-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-cdi</artifactId>
             <version>${hibernate-validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>${glassfish-expressly.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -138,6 +144,25 @@
             <version>${hamcrest-matcher-generator-annotationprocessor.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -157,6 +182,34 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.hibernate.orm.tooling</groupId>
+                <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                <!--
+                    Ideally, your plugin versions are managed via a
+                    <pluginManagement> element, which is why the <version> element
+                    is commented out below.  If, nevertheless, you opt for the
+                    explicit version, check
+                    https://search.maven.org/artifact/org.hibernate.orm/hibernate-enhance-maven-plugin
+                    for up-to-date versions, and make sure the version is the same
+                    as that of Hibernate ORM itself.
+                -->
+                <!-- <version>6.1.1.Final</version> -->
+                <executions>
+                    <execution>
+                        <id>Statically enhance JPA entities for Hibernate</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                        <configuration>
+                            <failOnError>true</failOnError>
+                            <enableDirtyTracking>true</enableDirtyTracking>
+                            <enableLazyInitialization>true</enableLazyInitialization>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

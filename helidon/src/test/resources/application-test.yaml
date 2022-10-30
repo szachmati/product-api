@@ -1,0 +1,12 @@
+security:
+  enabled: false
+
+javax:
+  sql:
+    DataSource:
+      shopDataSource:
+        dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
+        dataSource:
+          url: ${TEST_DB_URL}
+          user: ${TEST_DB_USER}
+          password: ${TEST_DB_PASSWORD}
