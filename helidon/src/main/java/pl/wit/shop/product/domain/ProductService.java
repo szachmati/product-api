@@ -1,12 +1,11 @@
 package pl.wit.shop.product.domain;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import jakarta.transaction.Transactional;
 
 import java.util.UUID;
 
-@Singleton
+@ApplicationScoped
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -21,7 +20,6 @@ public class ProductService {
         this.productCategoryRepository = productCategoryRepository;
     }
 
-    @Transactional
     public void create(ProductSaveDto dto) {
         ProductCategory category = productCategoryRepository.getByName(dto.getCategory());
         checkIfProductWithGivenNameExistsInCategory(dto);
@@ -35,6 +33,10 @@ public class ProductService {
     public void delete(UUID uuid) {
         Product product = productRepository.getByUuid(uuid);
         productRepository.delete(product);
+    }
+
+    public Product getProduct(UUID uuid) {
+        return productRepository.getByUuid(uuid);
     }
 
     private void checkIfProductWithGivenNameExistsInCategory(ProductSaveDto dto) {

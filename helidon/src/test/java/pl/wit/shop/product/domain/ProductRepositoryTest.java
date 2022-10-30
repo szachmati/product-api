@@ -2,6 +2,7 @@ package pl.wit.shop.product.domain;
 
 import io.helidon.microprofile.tests.junit5.HelidonTest;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,7 @@ class ProductRepositoryTest {
 
 
     @Test
+    @Transactional
     void existsByNameAndCategoryName_shouldReturnBooleanValue() {
         ProductCategory homeProductCategory = productCategoryRepository.save(aHomeProductCategory().build());
         productRepository.save(

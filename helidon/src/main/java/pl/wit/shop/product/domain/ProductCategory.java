@@ -6,11 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "product_category")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PACKAGE, force = true)
 public class ProductCategory {

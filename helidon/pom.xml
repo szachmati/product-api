@@ -111,6 +111,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>${common-lang3.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <!--   test   -->
         <dependency>
