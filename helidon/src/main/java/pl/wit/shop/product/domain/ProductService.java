@@ -2,6 +2,7 @@ package pl.wit.shop.product.domain;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import pl.wit.shop.shared.exception.ConflictException;
 
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class ProductService {
         }
     }
 
-    public static class ProductAlreadyExistsException extends RuntimeException {
+    public static class ProductAlreadyExistsException extends ConflictException {
         ProductAlreadyExistsException(String name, String category) {
             super(String.format("Product with name: %s already exists in category: %s", name, category));
         }

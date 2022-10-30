@@ -12,8 +12,8 @@ public interface ProductCategoryRepository extends BaseRepository<ProductCategor
     ProductCategory getByName(String name);
 
     @Override
-    default Supplier<NotFoundException> notFoundException(String cause) {
-        return () -> new ProductCategoryNotFoundException(cause);
+    default Supplier<NotFoundException> notFoundException(String name) {
+        return () -> new ProductCategoryNotFoundException(name);
     }
 
     @Override
@@ -22,8 +22,8 @@ public interface ProductCategoryRepository extends BaseRepository<ProductCategor
     };
 
     class ProductCategoryNotFoundException extends NotFoundException {
-       public ProductCategoryNotFoundException(String cause) {
-            super(cause);
+       public ProductCategoryNotFoundException(String name) {
+            super(String.format("Product category with name: %s not found", name));
         }
     }
 }

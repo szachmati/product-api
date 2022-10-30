@@ -42,7 +42,7 @@ public class ProductRepositoryFacadeImpl implements ProductRepository {
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> root = query.from(Product.class);
         root.fetch("category", JoinType.INNER);
-        query.select(root).where(cb.equal(root.get("category.name"), category));
+        query.select(root).where(cb.equal(root.get("category").get("name"), category));
         return entityManager.createQuery(query).getResultList();
     }
 }

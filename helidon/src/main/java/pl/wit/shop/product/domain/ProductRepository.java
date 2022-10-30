@@ -43,8 +43,8 @@ public interface ProductRepository extends BaseRepository<Product> {
     }
 
     class ProductNotFoundException extends NotFoundException {
-        public ProductNotFoundException(String cause) {
-            super(cause);
+        public ProductNotFoundException(String uuid) {
+            super(String.format("Product with id: %s not found", uuid));
         }
     }
 }

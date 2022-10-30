@@ -1,10 +1,11 @@
 package pl.wit.shop.shared.exception;
 
-import io.helidon.common.http.Http;
-import io.helidon.webserver.HttpException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public class BaseException extends HttpException {
-    public BaseException(String message, Http.Status status) {
-        super(message, status);
-    }
+@Getter
+@AllArgsConstructor
+public class BaseException extends RuntimeException {
+    private final int code;
+    private final String message;
 }

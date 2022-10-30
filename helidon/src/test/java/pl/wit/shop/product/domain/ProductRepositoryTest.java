@@ -20,7 +20,6 @@ class ProductRepositoryTest {
     @Inject
     private ProductCategoryRepository productCategoryRepository;
 
-
     @Test
     @Transactional
     void existsByNameAndCategoryName_shouldReturnBooleanValue() {
