@@ -3,8 +3,10 @@ package pl.wit.shop.product.domain;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import pl.wit.shop.common.repository.Pageable;
 import pl.wit.shop.shared.exception.ConflictException;
 
+import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -37,6 +39,10 @@ public class ProductService {
     public void delete(UUID uuid) {
         Product product = productRepository.getByUuid(uuid);
         productRepository.delete(product);
+    }
+
+    public List<Product> findAllProductsInCategory(Pageable pageable, String category) {
+        return productRepository.findAllProductsInCategory(pageable, category);
     }
 
     public Product getProduct(UUID uuid) {

@@ -27,7 +27,9 @@ public class ProductCategoryRepositoryTest {
     @BeforeEach
     @Transactional
     void init() {
-        entityManager.createNativeQuery("TRUNCATE TABLE product, product_category").executeUpdate();
+        entityManager
+                .createNativeQuery("TRUNCATE TABLE product, product_category RESTART IDENTITY")
+                .executeUpdate();
     }
 
     @Test
