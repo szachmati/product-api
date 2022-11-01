@@ -1,16 +1,15 @@
 package pl.wit.shop.product.domain;
 
-import io.helidon.microprofile.tests.junit5.HelidonTest;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.common.repository.Pageable;
 import pl.wit.shop.common.repository.Sort;
+import pl.wit.shop.product.test.base.BaseIT;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,8 +25,7 @@ import static pl.wit.shop.product.test.data.ProductTestDataIdentifiers.PRODUCT_1
 import static pl.wit.shop.product.test.data.ProductTestDataIdentifiers.PRODUCT_2_UUID;
 
 @Slf4j
-@HelidonTest
-class ProductRepositoryTest {
+class ProductRepositoryTest extends BaseIT {
 
     @Inject
     private ProductRepository productRepository;
@@ -39,23 +37,25 @@ class ProductRepositoryTest {
     private EntityManager entityManager;
 
     @BeforeEach
-    @Transactional
     void init() {
-        entityManager
-                .createNativeQuery("TRUNCATE TABLE product, product_category RESTART IDENTITY")
-                .executeUpdate();
+        inTransactionWithoutResult(() -> {
+            entityManager
+                    .createNativeQuery("TRUNCATE TABLE product, product_category RESTART IDENTITY")
+                    .executeUpdate();
+        });
     }
 
     @Test
-    @Transactional
     void existsByNameAndCategoryName_shouldReturnBooleanValue() {
-        ProductCategory homeProductCategory = productCategoryRepository.save(aHomeProductCategory().build());
-        productRepository.save(
-                aFirstHomeProduct()
-                        .withName("Product 1")
-                        .withCategory(homeProductCategory)
-                        .build()
-        );
+        inTransactionWithoutResult(() -> {
+            final ProductCategory homeProductCategory = productCategoryRepository.save(aHomeProductCategory().build());
+            productRepository.save(
+                    aFirstHomeProduct()
+                            .withName("Product 1")
+                            .withCategory(homeProductCategory)
+                            .build()
+            );
+        });
 
         boolean result = productRepository.existsByNameAndCategoryName("Product 1", "HOME");
         log.info("result: {}", result);
@@ -64,24 +64,25 @@ class ProductRepositoryTest {
     }
 
     @Test
-    @Transactional
     void findAllProductsInCategory_shouldReturnAllProductsInCategory() {
-        ProductCategory homeProductCategory = productCategoryRepository.save(aHomeProductCategory().build());
-        productRepository.save(
-                aFirstHomeProduct()
-                        .withName("Product 1")
-                        .withCategory(homeProductCategory)
-                        .withPrice(new BigDecimal("16.77"))
-                        .build()
-        );
+        inTransactionWithoutResult(() -> {
+            final ProductCategory homeProductCategory = productCategoryRepository.save(aHomeProductCategory().build());
+            productRepository.save(
+                    aFirstHomeProduct()
+                            .withName("Product 1")
+                            .withCategory(homeProductCategory)
+                            .withPrice(new BigDecimal("16.77"))
+                            .build()
+            );
 
-        productRepository.save(
-                aSecondHomeProduct()
-                        .withName("Product 2")
-                        .withCategory(homeProductCategory)
-                        .withPrice(new BigDecimal("30.21"))
-                        .build()
-        );
+            productRepository.save(
+                    aSecondHomeProduct()
+                            .withName("Product 2")
+                            .withCategory(homeProductCategory)
+                            .withPrice(new BigDecimal("30.21"))
+                            .build()
+            );
+        });
 
        List<Product> result =  productRepository.findAllProductsInCategory(
              new Pageable(

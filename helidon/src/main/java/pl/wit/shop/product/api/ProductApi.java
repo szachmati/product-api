@@ -12,7 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.experimental.FieldDefaults;
 import pl.wit.shop.product.domain.Product;
 import pl.wit.shop.product.domain.ProductSaveDto;
 import pl.wit.shop.product.domain.ProductService;
@@ -45,13 +45,15 @@ public class ProductApi {
         }
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
+
     @Getter
+    @FieldDefaults(makeFinal = true)
+    @NoArgsConstructor(force = true)
+    @AllArgsConstructor
     public static class ProductOutput {
-        private UUID uuid;
-        private String name;
-        private String category;
+        UUID uuid;
+        String name;
+        String category;
         public static ProductOutput from(Product product) {
             return new ProductOutput(product.getUuid(), product.getName(), product.getCategory().getName());
         }

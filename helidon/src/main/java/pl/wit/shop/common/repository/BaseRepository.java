@@ -17,7 +17,7 @@ public interface BaseRepository<E> {
 
     Supplier<NotFoundException> notFoundException(String cause);
 
-   Class<E> clazz();
+    Class<E> clazz();
 
     default void delete(E entity) {
         getEntityManager().remove(entity);
