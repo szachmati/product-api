@@ -1,10 +1,12 @@
 package pl.wit.shop.common.exception;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import pl.wit.shop.shared.exception.BaseException;
 
+@ApplicationScoped
 @Provider
 public class GlobalExceptionMapper implements ExceptionMapper<BaseException> {
 

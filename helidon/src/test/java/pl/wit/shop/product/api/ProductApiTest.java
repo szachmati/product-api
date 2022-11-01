@@ -17,11 +17,15 @@ import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.common.repository.Sort;
+import pl.wit.shop.product.domain.Product;
 import pl.wit.shop.product.domain.ProductCategory;
+import pl.wit.shop.product.domain.ProductRepository;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 import pl.wit.shop.product.test.transaction.TransactionOperations;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -34,6 +38,8 @@ import static pl.wit.shop.product.domain.ProductBuilder.aSecondHomeProduct;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
 import static pl.wit.shop.product.api.ProductApi.ProductOutput;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.anElectronicsProductCategory;
+import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategory;
+import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 
 @HelidonTest
 public class ProductApiTest implements ProductTestDataIdentifiers, TransactionOperations {
@@ -50,6 +56,9 @@ public class ProductApiTest implements ProductTestDataIdentifiers, TransactionOp
     @Getter
     @Inject
     private TransactionManager transactionManager;
+
+    @Inject
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
@@ -73,6 +82,13 @@ public class ProductApiTest implements ProductTestDataIdentifiers, TransactionOp
                 .post(Entity.entity(aProductInput().build(), MediaType.APPLICATION_JSON_TYPE));
 
         assertThat(response.getStatus(), is(HttpResponseStatus.CREATED.code()));
+        List<Product> products = entityManager.createQuery("SELECT p FROM Product p INNER JOIN FETCH p.category").getResultList();
+        assertThat(products, contains(
+                isProduct()
+                        .withCategory(isProductCategory().withName("HOME"))
+                        .withName("Home product")
+                        .withPrice(new BigDecimal("1.00"))
+        ));
     }
 
     @Test
@@ -117,6 +133,7 @@ public class ProductApiTest implements ProductTestDataIdentifiers, TransactionOp
                 .invoke();
 
         assertThat(response.getStatus(), is(HttpResponseStatus.OK.code()));
+        assertThat(productRepository.findByUuid(PRODUCT_1_UUID), is(Optional.empty()));
     }
 
     @Test
@@ -202,6 +219,11 @@ public class ProductApiTest implements ProductTestDataIdentifiers, TransactionOp
                 .put(Entity.entity(aProductInput().build(), MediaType.APPLICATION_JSON_TYPE));
 
         assertThat(response.getStatus(), is(HttpResponseStatus.NO_CONTENT.code()));
+        assertThat(productRepository.getByUuid(PRODUCT_1_UUID), isProduct()
+                .withCategory(isProductCategory().withName("HOME"))
+                .withName("Home product")
+                .withPrice(new BigDecimal("1.00"))
+        );
     }
 
     @Test
