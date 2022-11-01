@@ -41,8 +41,8 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public List<Product> findAllProductsInCategory(Pageable pageable, String category) {
-        return productRepository.findAllProductsInCategory(pageable, category);
+    public List<Product> findAllProductsInCategory(String category, Pageable pageable) {
+        return productRepository.findAllProductsInCategory(category, pageable);
     }
 
     public Product getProduct(UUID uuid) {

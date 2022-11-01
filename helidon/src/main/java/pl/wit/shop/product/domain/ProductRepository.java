@@ -11,7 +11,7 @@ public interface ProductRepository extends BaseRepository<Product> {
 
     boolean existsByNameAndCategoryName(String productName, String categoryName);
 
-    List<Product> findAllProductsInCategory(Pageable pageable, String category);
+    List<Product> findAllProductsInCategory(String category, Pageable pageable);
 
     @Override
     default Class<Product> clazz() {

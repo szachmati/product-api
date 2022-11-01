@@ -109,13 +109,13 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Test
     void findAllProductsInCategory_shouldPassParams() {
-        given(productRepository.findAllProductsInCategory(any(), anyString())).willReturn(List.of());
+        given(productRepository.findAllProductsInCategory(anyString(), any())).willReturn(List.of());
         final Pageable pageable = new Pageable(Sort.DESC, "name", 5, 20);
 
-        List<Product> result = productService.findAllProductsInCategory(pageable, "HOME");
+        List<Product> result = productService.findAllProductsInCategory("HOME", pageable);
 
         assertThat(result, Matchers.empty());
-        then(productRepository).should().findAllProductsInCategory(pageable, "HOME");
+        then(productRepository).should().findAllProductsInCategory("HOME", pageable);
     }
 
     @Test

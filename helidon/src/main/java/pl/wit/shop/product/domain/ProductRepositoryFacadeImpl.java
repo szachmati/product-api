@@ -58,7 +58,7 @@ public class ProductRepositoryFacadeImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> findAllProductsInCategory(Pageable pageable, String category) {
+    public List<Product> findAllProductsInCategory(String category, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> root = query.from(Product.class);
@@ -71,8 +71,8 @@ public class ProductRepositoryFacadeImpl implements ProductRepository {
             query.orderBy(order);
         }
         return entityManager.createQuery(query)
-                .setFirstResult(pageable.firstElement())
-                .setMaxResults(pageable.pageSize())
+                .setFirstResult(pageable.page())
+                .setMaxResults(pageable.size())
                 .getResultList();
     }
 }
