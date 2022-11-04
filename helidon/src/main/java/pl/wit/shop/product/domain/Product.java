@@ -26,8 +26,8 @@ import static java.util.Objects.requireNonNull;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "product_seq", sequenceName = "product_seq" , allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq_gen")
+    @SequenceGenerator(name = "product_seq_gen", sequenceName = "product_seq" , allocationSize = 1)
     @Getter(AccessLevel.PRIVATE)
     private final Long id;
 

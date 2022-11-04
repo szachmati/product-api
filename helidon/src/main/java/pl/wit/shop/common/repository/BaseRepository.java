@@ -53,7 +53,6 @@ public interface BaseRepository<E> {
             return em.merge(entity);
         }
         em.persist(entity);
-        em.flush();
         return entity;
     }
 }
