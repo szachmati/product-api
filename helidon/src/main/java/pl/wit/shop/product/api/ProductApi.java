@@ -21,6 +21,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -56,7 +57,11 @@ public class ProductApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
-            @Parameter(description = "Product input data", required = true)
+            @RequestBody(
+                    description = "Product input data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = ProductInput.class))
+            )
             @Valid ProductInput input
     ) {
         productService.create(input.toDto());
@@ -87,15 +92,22 @@ public class ProductApi {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ProductOutput> findAllProductsInCategory(
-            @Parameter(description = "Product category", required = true)
+            @Parameter(description = "Product category", required = true,
+                    content = @Content(schema = @Schema(enumeration = {
+                            "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                            "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+                    })))
             @QueryParam("category") String category,
             @Parameter(description = "Sort field", required = true)
             @QueryParam("sort") Sort sort,
-            @Parameter(description = "Sort field", required = true)
+            @Parameter(description = "Sort field", required = true,
+                    content = @Content(schema = @Schema(enumeration = {
+                            "name", "category", "price"
+                    })))
             @QueryParam("sortField") String sortField,
-            @Parameter(description = "Page number", required = true)
+            @Parameter(description = "Page number", required = true, example = "5")
             @QueryParam("page") String page,
-            @Parameter(description = "Page size", required = true)
+            @Parameter(description = "Page size", required = true, example = "20")
             @QueryParam("size") String size
     ) {
         Pageable p = new Pageable(sort, sortField, Integer.parseInt(page), Integer.parseInt(size));
@@ -104,7 +116,7 @@ public class ProductApi {
                 .toList();
     }
 
-    @Operation()
+    @Operation(summary = "Get product by id")
     @APIResponses({
             @APIResponse(responseCode = "200", description = "Product"),
             @APIResponse(responseCode = "404", description = "Product with given id was not found")
@@ -112,7 +124,10 @@ public class ProductApi {
     @GET
     @Path("{uuid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ProductOutput getProduct(@PathParam("uuid") UUID uuid) {
+    public ProductOutput getProduct(
+            @Parameter(description = "Product id", required = true)
+            @PathParam("uuid") UUID uuid
+    ) {
         return ProductOutput.from(productService.getProduct(uuid));
     }
 
@@ -125,10 +140,16 @@ public class ProductApi {
     })
     @PUT
     @Path("{uuid}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
             @Parameter(description = "Product id", required = true)
             @PathParam("uuid") UUID uuid,
+            @RequestBody(
+                    description = "Product input data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = ProductInput.class))
+            )
             @Valid ProductInput input
     ) {
         productService.update(uuid, input.toDto());
