@@ -10,3 +10,5 @@ javax:
           url: jdbc:postgresql://localhost:4040/shop
           user: shop
           password: shop
+openapi-ui:
+  serverVisibility: visible

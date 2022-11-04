@@ -6,16 +6,16 @@
     <parent>
         <groupId>io.helidon.applications</groupId>
         <artifactId>helidon-mp</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.2</version>
         <relativePath/>
     </parent>
     <groupId>pl.wit</groupId>
     <artifactId>shop</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <properties>
         <mainClass>pl.wit.shop.Main</mainClass>
-        <java.version>18</java.version>
+        <java.version>17</java.version>
         <lombok.version>1.18.24</lombok.version>
         <postgres.version>42.5.0</postgres.version>
         <hibernate-jpamodelgen.version>6.1.1.Final</hibernate-jpamodelgen.version>
@@ -28,6 +28,7 @@
         <hamcrest-matcher-generator-annotationprocessor.version>4.2.5</hamcrest-matcher-generator-annotationprocessor.version>
         <glassfish-expressly.version>5.0.0</glassfish-expressly.version>
         <testcontainers.version>1.17.4</testcontainers.version>
+        <openapi-ui.version>2.0.0</openapi-ui.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,11 @@
         <dependency>
             <groupId>io.helidon.microprofile.openapi</groupId>
             <artifactId>helidon-microprofile-openapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.microprofile-ext.openapi-ext</groupId>
+            <artifactId>openapi-ui</artifactId>
+            <version>${openapi-ui.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -51,7 +57,7 @@
         <dependency>
             <groupId>jakarta.activation</groupId>
             <artifactId>jakarta.activation-api</artifactId>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -67,7 +73,6 @@
         <dependency>
             <groupId>io.helidon.integrations.cdi</groupId>
             <artifactId>helidon-integrations-cdi-jpa</artifactId>
-            <version>3.0.2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -78,7 +83,7 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.transaction</groupId>
