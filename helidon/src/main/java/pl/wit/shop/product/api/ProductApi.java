@@ -50,6 +50,7 @@ public class ProductApi {
     @Operation(summary = "Create product")
     @APIResponses({
             @APIResponse(responseCode = "201", description = "Product was created successfully"),
+            @APIResponse(responseCode = "404", description = "Product category was not found"),
             @APIResponse(responseCode = "409", description = "Product with given name already exists" +
                     "in category")
     })
@@ -134,7 +135,7 @@ public class ProductApi {
     @Operation(summary = "Update product")
     @APIResponses({
             @APIResponse(responseCode = "200", description = "Product was updated successfully"),
-            @APIResponse(responseCode = "404", description = "Product with given id was not found"),
+            @APIResponse(responseCode = "404", description = "Product category was not found or product with given id was not found"),
             @APIResponse(responseCode = "409", description = "Product with given name already exists" +
                     "in category")
     })
