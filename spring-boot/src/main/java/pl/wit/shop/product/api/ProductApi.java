@@ -1,7 +1,9 @@
 package pl.wit.shop.product.api;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,6 +47,7 @@ public class ProductApi {
     @Operation(summary = "Create product")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Product was created successfully"),
+            @ApiResponse(responseCode = "404", description = "Product category not found"),
             @ApiResponse(responseCode = "409", description = "Product with given name already exists" +
                     "in category")
     })
@@ -74,9 +78,16 @@ public class ProductApi {
     )
     @GetMapping
     public Page<ProductOutput> findAllProductsInCategory(
-            @Parameter(description = "Products category", required = true) @RequestParam String category,
+            @Parameter(description = "Product category", required = true,
+                    content = @Content(schema = @Schema(allowableValues = {
+                            "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                            "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+                    })))
+            @RequestParam
+            String category,
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC)
-                    Pageable pageable
+            @ParameterObject
+            Pageable pageable
     ) {
         return productService.findAllProductsInCategory(category, pageable)
                 .map(ProductOutput::from);
@@ -85,7 +96,7 @@ public class ProductApi {
     @Operation(summary = "Update product")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Product was updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Product with given id was not found"),
+            @ApiResponse(responseCode = "404", description = "Product category was not found or product with given id was not found"),
             @ApiResponse(responseCode = "409", description = "Product with given name already exists" +
                     "in category")
     })
