@@ -1,9 +1,7 @@
 package pl.wit.shop.product.api;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -112,15 +110,15 @@ public class ProductApi {
     }
 
     @Value
-    @Schema
+    @Schema(description = "Product data")
     public static class ProductOutput {
-        @Parameter(description = "Product id")
+        @Schema(description = "Product id", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
         UUID uuid;
-        @Parameter(description = "Product category")
+        @Schema(description = "Product category", example = "ELECTRONICS")
         String category;
-        @Parameter(description = "Product name")
+        @Schema(description = "Product name", example = "Playstation 4")
         String name;
-        @Parameter(description = "Product price")
+        @Schema(description = "Product price", example = "1200.87")
         BigDecimal price;
 
         static ProductOutput from(Product product) {
@@ -133,13 +131,16 @@ public class ProductApi {
         }
     }
 
-    @Schema
+    @Schema(description = "Product input data")
     public record ProductInput(
-            @Parameter(description = "Product name", required = true)
+            @Schema(description = "Product name", required = true, example = "LG 123")
             @NotBlank String name,
-            @Parameter(description = "Product category", required = true)
+            @Schema(description = "Product category", required = true, example = "MUSIC", allowableValues = {
+                    "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                    "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+            })
             @NotNull String category,
-            @Parameter(description = "Product price", required = true)
+            @Schema(description = "Product price", required = true, example = "33.99")
             @NotNull BigDecimal price
     ) {
         ProductSaveDto toDto() {
