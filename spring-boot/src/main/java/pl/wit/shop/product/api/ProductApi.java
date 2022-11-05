@@ -99,7 +99,6 @@ public class ProductApi {
                     "in category")
     })
     @PutMapping("/{uuid}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(
             @Parameter(description = "Product id", required = true)
             @PathVariable UUID uuid,
