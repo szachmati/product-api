@@ -32,12 +32,6 @@ class ProductRepositoryTest extends BaseJpaTest implements ProductTestDataIdenti
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
-    @BeforeEach
-    void tearDown() {
-        productRepository.deleteAll();
-        productCategoryRepository.deleteAll();
-    }
-
     @Test
     void findAllProductsInCategory_shouldReturnPageWithHomeProductsSortedByPriceDesc() {
         productCategoryRepository.saveAll(List.of(

@@ -125,7 +125,7 @@ class ProductApiTest implements ProductTestDataIdentifiers {
                 .content(asJson(productInput))
         );
 
-        resultActions.andExpect(status().isNoContent());
+        resultActions.andExpect(status().isOk());
         then(productService).should().update(PRODUCT_1_UUID, productInput.toDto());
     }
 

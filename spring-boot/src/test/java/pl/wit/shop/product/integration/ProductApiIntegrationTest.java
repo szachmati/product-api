@@ -157,7 +157,7 @@ class ProductApiIntegrationTest extends BaseIntegrationTest implements ProductTe
         ResponseEntity<String> responseEntity =
                 put(PRODUCT_API + "/" + PRODUCT_1_UUID, requestBody, String.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.NO_CONTENT));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         transactionOperations.executeWithoutResult(transactionStatus -> {
             assertThat(productRepository.getByUuid(PRODUCT_1_UUID), isProduct()
                     .withUuid(PRODUCT_1_UUID)

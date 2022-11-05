@@ -22,6 +22,7 @@
         <validation-api.version>2.0.1.Final</validation-api.version>
         <spring-boot-starter.version>2.7.2</spring-boot-starter.version>
         <springdoc-version>1.6.9</springdoc-version>
+        <flyway.version>8.5.13</flyway.version>
     </properties>
 
     <dependencies>
@@ -39,6 +40,12 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
 
         <dependency>
@@ -125,6 +132,16 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:4000/shop</url>
+                    <user>shop</user>
+                    <password>shop</password>
                 </configuration>
             </plugin>
         </plugins>

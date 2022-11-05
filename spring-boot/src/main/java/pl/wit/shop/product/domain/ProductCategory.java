@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -16,6 +17,7 @@ public class ProductCategory {
     @Getter(AccessLevel.PRIVATE)
     private final Long id;
 
+    @NotBlank
     @Column(unique = true)
     private String name;
 }

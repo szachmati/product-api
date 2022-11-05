@@ -14,11 +14,11 @@ import org.springframework.transaction.support.TransactionOperations;
 import pl.wit.shop.product.test.utils.RestTemplateMethods;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 @Tag("integration")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class BaseIntegrationTest extends BaseDatabaseTest implements RestTemplateMethods {
+public abstract class BaseIntegrationTest extends PostgresContainer
+        implements DbCleaner, RestTemplateMethods {
 
     @LocalServerPort
     private int port;
@@ -27,9 +27,11 @@ public abstract class BaseIntegrationTest extends BaseDatabaseTest implements Re
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
+    @Getter
     @Autowired
     protected TransactionOperations transactionOperations;
 
+    @Getter
     @Autowired
     private EntityManager entityManager;
 
@@ -38,20 +40,6 @@ public abstract class BaseIntegrationTest extends BaseDatabaseTest implements Re
         clearAllEntities();
     }
 
-    private void clearAllEntities() {
-        List tableNames = getTableNamesInCurrentSchema();
-        transactionOperations.executeWithoutResult(status -> {
-            entityManager
-                    .createNativeQuery("TRUNCATE TABLE " + String.join(",", tableNames) + " restart IDENTITY")
-                    .executeUpdate();
-        });
-    }
-
-    private List getTableNamesInCurrentSchema() {
-        return entityManager
-                .createNativeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'public'")
-                .getResultList();
-    }
 
     @TestConfiguration
     public class TestRestTemplateConfig {

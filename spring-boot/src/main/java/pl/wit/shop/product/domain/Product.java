@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductCategory category;
 
-    @NotNull
+    @NotBlank
     private String name;
 
     @NotNull
