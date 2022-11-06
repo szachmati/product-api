@@ -166,7 +166,7 @@ public class ProductApi {
 
     @Getter
     @RequiredArgsConstructor
-    private enum ProductSort {
+    public enum ProductSort {
         PRODUCT_NAME("p.name"),
         PRODUCT_PRICE("p.price"),
         PRODUCT_CATEGORY("pc.name");

@@ -38,7 +38,7 @@ public class Product {
     private final UUID uuid;
 
     @NotNull
-    @JoinColumn(name = "product_category_id")
+    @JoinColumn(name = "category_id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private ProductCategory category;
 

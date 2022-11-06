@@ -1,14 +1,13 @@
 package pl.wit.shop.product.integration;
 
 import io.quarkus.narayana.jta.QuarkusTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.panache.common.Sort;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.product.api.ProductApi;
 import pl.wit.shop.product.domain.ProductCategoryRepository;
 import pl.wit.shop.product.domain.ProductRepository;
-import pl.wit.shop.product.test.base.PostgresResource;
+import pl.wit.shop.product.test.base.BaseDatabaseTest;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 import javax.inject.Inject;
@@ -36,8 +35,7 @@ import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 import static pl.wit.shop.product.api.ProductApi.ProductOutput;
 
 @QuarkusTest
-@QuarkusTestResource(PostgresResource.class)
-class ProductApiIntegrationTest implements ProductTestDataIdentifiers {
+class ProductApiIntegrationTest extends BaseDatabaseTest implements ProductTestDataIdentifiers {
 
     private static final String PRODUCT_API = "/api/products";
 
@@ -46,14 +44,6 @@ class ProductApiIntegrationTest implements ProductTestDataIdentifiers {
 
     @Inject
     ProductRepository productRepository;
-
-    @AfterEach
-    void tearDown() {
-       QuarkusTransaction.run(() -> {
-           productRepository.deleteAll();
-           productCategoryRepository.deleteAll();
-       });
-    }
 
     @Test
     void create_shouldCreateProduct() {
@@ -106,8 +96,8 @@ class ProductApiIntegrationTest implements ProductTestDataIdentifiers {
                   .contentType(MediaType.APPLICATION_JSON)
                     .queryParams(Map.of(
                             "category", "HOME",
-                            "sort", "price",
-                            "sortDir", "desc",
+                            "sort", ProductApi.ProductSort.PRODUCT_NAME,
+                            "sortDir", Sort.Direction.Descending.name(),
                             "page", "0",
                             "size", "5"
                     ))

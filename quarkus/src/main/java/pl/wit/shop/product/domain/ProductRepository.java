@@ -3,9 +3,9 @@ package pl.wit.shop.product.domain;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
+import pl.wit.shop.shared.exception.NotFoundException;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.UUID;
 

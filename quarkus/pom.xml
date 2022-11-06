@@ -21,6 +21,8 @@
         <lombok.version>1.18.24</lombok.version>
         <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
         <hamcrest-matcher-generator.version>4.2.5</hamcrest-matcher-generator.version>
+        <testcontainers.version>1.17.3</testcontainers.version>
+        <quarkus-smallrye-openapi.version>2.11.2.Final</quarkus-smallrye-openapi.version>
     </properties>
 
     <dependencyManagement>
@@ -59,6 +61,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
         </dependency>
 
         <dependency>
@@ -111,28 +118,28 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.17.3</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.17.3</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.17.3</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-openapi</artifactId>
-            <version>2.11.2.Final</version>
+            <version>${quarkus-smallrye-openapi.version}</version>
         </dependency>
 
     </dependencies>

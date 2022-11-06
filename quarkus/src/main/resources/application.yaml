@@ -10,13 +10,12 @@
       password: shop
       jdbc:
         url: jdbc:postgresql://localhost:5432/shop
-    hibernate-orm:
-      database:
-        generation: drop-and-create
-      sql-load-script: META-INF/resources/sql/import.sql
+    flyway:
+      locations: "classpath:/db/migration"
+      migrate-at-start: true
 
 "%test":
   quarkus:
-    hibernate-orm:
-      database:
-        generation: drop-and-create
+    flyway:
+      locations: "classpath:/db/migration"
+      migrate-at-start: true

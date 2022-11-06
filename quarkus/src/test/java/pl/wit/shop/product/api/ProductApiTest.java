@@ -1,5 +1,6 @@
 package pl.wit.shop.product.api;
 
+import io.quarkus.panache.common.Sort;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.junit.jupiter.api.Test;
@@ -109,8 +110,8 @@ public class ProductApiTest implements ProductTestDataIdentifiers {
                 .contentType(MediaType.APPLICATION_JSON)
                 .queryParams(Map.of(
                         "category", "HOME",
-                        "sort", "name",
-                        "sortDir", "desc",
+                        "sort", ProductApi.ProductSort.PRODUCT_PRICE,
+                        "sortDir", Sort.Direction.Descending.name(),
                         "page", "2",
                         "size", "5"
                 ))

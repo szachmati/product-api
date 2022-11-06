@@ -2,10 +2,9 @@ package pl.wit.shop.product.domain;
 
 import io.quarkus.panache.common.Sort;
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
-import pl.wit.shop.product.test.base.PostgresResource;
+import pl.wit.shop.product.test.base.BaseDatabaseTest;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 import javax.inject.Inject;
@@ -24,9 +23,8 @@ import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategor
 import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 
 @QuarkusTest
-@QuarkusTestResource(PostgresResource.class)
 @TestTransaction
-class ProductRepositoryTest implements ProductTestDataIdentifiers {
+class ProductRepositoryTest extends BaseDatabaseTest implements ProductTestDataIdentifiers {
 
     @Inject
     ProductRepository productRepository;
