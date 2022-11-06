@@ -16,4 +16,6 @@ To generate a native executable using Maven, run: `./mvnw package -Dpackaging=na
 
 Run in CMD `/target/shop.exe`
 
+## Swagger
+http://localhost:8030/swagger-ui/index.html
 

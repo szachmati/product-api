@@ -11,13 +11,13 @@ import io.micronaut.http.uri.UriBuilder;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.transaction.TransactionOperations;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.product.api.ProductApi;
 import pl.wit.shop.product.domain.Product;
 import pl.wit.shop.product.domain.ProductCategory;
 import pl.wit.shop.product.domain.ProductCategoryRepository;
 import pl.wit.shop.product.domain.ProductRepository;
+import pl.wit.shop.product.test.base.BaseDatabaseTest;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 import java.math.BigDecimal;
@@ -40,7 +40,7 @@ import static pl.wit.shop.product.api.ProductApi.ProductInput;
 import static pl.wit.shop.product.api.ProductApi.ProductOutput;
 
 @MicronautTest(transactional = false)
-class ProductApiIntegrationTest implements ProductTestDataIdentifiers {
+class ProductApiIntegrationTest extends BaseDatabaseTest implements ProductTestDataIdentifiers {
 
     @Inject
     private ProductRepository productRepository;
@@ -54,12 +54,6 @@ class ProductApiIntegrationTest implements ProductTestDataIdentifiers {
     @Inject
     @Client("/api/products")
     private HttpClient httpClient;
-
-    @BeforeEach
-    void init() {
-        productRepository.deleteAll();
-        productCategoryRepository.deleteAll();
-    }
 
     @Test
     void create_shouldCreateProduct() {
