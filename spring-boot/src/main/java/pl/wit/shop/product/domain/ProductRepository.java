@@ -13,6 +13,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     boolean existsByNameAndCategoryName(String name, String categoryName);
 
+    @Query("SELECT p FROM Product p INNER JOIN FETCH p.category " +
+            "WHERE p.uuid = ?1")
     Optional<Product> findByUuid(UUID uuid);
 
     default Product getByUuid(UUID uuid) {

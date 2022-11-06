@@ -63,7 +63,7 @@ public class ProductApi {
             @ApiResponse(responseCode = "200", description = "Product was deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Product with given id was not found")
     })
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping("{uuid}")
     public void delete(@Parameter(description = "Product id", required = true) @PathVariable UUID uuid) {
         productService.delete(uuid);
     }
@@ -90,6 +90,20 @@ public class ProductApi {
         return productService.findAllProductsInCategory(category, pageable)
                 .map(ProductOutput::from);
     }
+
+    @Operation(summary = "Get product by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product"),
+            @ApiResponse(responseCode = "404", description = "Product with given id was not found")
+    })
+    @GetMapping("{uuid}")
+    public ProductOutput getProduct(
+            @Parameter(description = "Product id", required = true)
+            @PathVariable("uuid") UUID uuid
+    ) {
+        return ProductOutput.from(productService.getProduct(uuid));
+    }
+
 
     @Operation(summary = "Update product")
     @ApiResponses({

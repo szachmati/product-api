@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -109,18 +109,34 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     }
 
     @Test
-    void findAllProductsInCategory_shouldReturnPageWithProductsInGivenCategory() {
+    void findAllProductsInCategory_shouldPassParams() {
         given(productRepository.findAllProductsInCategory(anyString(), any()))
-                .willReturn(new PageImpl<>(List.of(aMonitorProduct().build())));
+                .willReturn(new PageImpl<>(List.of()));
 
         Page<Product> result = productService.findAllProductsInCategory("ELECTRONICS", PageRequest.of(1, 2));
 
-        assertThat(result.getContent(), contains(
-                isProduct()
-                        .withUuid(PRODUCT_3_UUID)
-                        .withName("Monitor")
-                        .withCategory(isProductCategory().withName("ELECTRONICS"))
-        ));
+        assertThat(result.getContent(), empty());
+        then(productRepository).should().findAllProductsInCategory("ELECTRONICS", PageRequest.of(1,2));
+    }
+
+    @Test
+    void getProduct_shouldPassParams() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(aFirstHomeProduct().build());
+
+        productService.getProduct(PRODUCT_1_UUID);
+
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+    }
+
+    @Test
+    void getProduct_shouldThrowProductNotFoundException_whenProductNotExist() {
+        willThrow(ProductNotFoundException.class)
+                .given(productRepository).getByUuid(any());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> productService.getProduct(PRODUCT_2_UUID)
+        );
     }
 
     @Test

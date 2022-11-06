@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.wit.shop.product.api.ProductInputBuilder.aProductInput;
 import static pl.wit.shop.product.api.ProductApi.ProductInput;
+import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
 import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
 import static pl.wit.shop.product.domain.ProductCategoryRepository.ProductCategoryNotFoundException;
 import static pl.wit.shop.product.domain.ProductService.ProductAlreadyExistsException;
@@ -114,6 +115,26 @@ class ProductApiTest implements ProductTestDataIdentifiers {
 
         then(productService).should()
                 .findAllProductsInCategory("HOME", PageRequest.of(2, 50, Sort.by("category").descending()));
+    }
+
+    @Test
+    void getProduct_shouldReturn200() throws Exception {
+        given(productService.getProduct(any()))
+                .willReturn(aFirstHomeProduct().build());
+
+        mockMvc.perform(get(PRODUCT_API + "/" + PRODUCT_1_UUID))
+                .andExpect(status().isOk());
+
+        then(productService).should().getProduct(PRODUCT_1_UUID);
+    }
+
+    @Test
+    void getProduct_shouldReturn404_whenProductNotExist() throws Exception {
+        willThrow(ProductNotFoundException.class)
+                .given(productService).getProduct(any());
+
+        mockMvc.perform(get(PRODUCT_API + "/" + PRODUCT_1_UUID))
+                .andExpect(status().isNotFound());
     }
 
     @Test

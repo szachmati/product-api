@@ -144,6 +144,23 @@ class ProductApiIntegrationTest extends BaseIntegrationTest implements ProductTe
     }
 
     @Test
+    void getProduct_shouldReturnProduct() {
+        productCategoryRepository.save(aHomeProductCategory().build());
+        productRepository.save(aFirstHomeProduct().build());
+
+        ResponseEntity<ProductOutput> responseEntity =
+                get(PRODUCT_API + "/" + PRODUCT_1_UUID, ProductOutput.class);
+
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody(), isProductOutput()
+                .withUuid(PRODUCT_1_UUID)
+                .withName("Home product")
+                .withCategory("HOME")
+                .withPrice(new BigDecimal("1.00"))
+        );
+    }
+
+    @Test
     void update_shouldUpdateProduct() {
         productCategoryRepository.save(aHomeProductCategory().build());
         productCategoryRepository.save(anElectronicsProductCategory().build());
