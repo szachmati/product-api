@@ -1,8 +1,10 @@
 package pl.wit.shop.product.integration;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.product.api.ProductApi;
 import pl.wit.shop.product.domain.ProductCategoryRepository;
@@ -120,6 +122,28 @@ class ProductApiIntegrationTest extends BaseDatabaseTest implements ProductTestD
                         .withName("Home product")
                         .withPrice(new BigDecimal("1.00"))
         ));
+    }
+
+    @Test
+    void getProduct_shouldReturnProduct() {
+        QuarkusTransaction.run(() -> {
+            productCategoryRepository.persistAndFlush(aHomeProductCategory().build());
+            productRepository.persistAndFlush(aFirstHomeProduct().withPrice(new BigDecimal("30.23")).build());
+        });
+
+        final Response response = given()
+                .pathParam("uuid", PRODUCT_1_UUID)
+                .when()
+                .get(PRODUCT_API + "/{uuid}")
+                .thenReturn();
+
+        assertThat(response.statusCode(), is(HttpResponseStatus.OK.code()));
+        assertThat(response.as(ProductOutput.class), isProductOutput()
+                .withUuid(PRODUCT_1_UUID)
+                .withCategory("HOME")
+                .withName("Home product")
+                .withPrice(new BigDecimal("30.23"))
+        );
     }
 
     @Test

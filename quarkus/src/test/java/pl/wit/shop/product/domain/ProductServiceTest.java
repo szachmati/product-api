@@ -122,6 +122,32 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     }
 
     @Test
+    void getProduct_shouldPassParams() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(aFirstHomeProduct().build());
+
+        Product product = productService.getProduct(PRODUCT_1_UUID);
+
+        assertThat(product, isProduct()
+                .withUuid(PRODUCT_1_UUID)
+                .withName("Home product")
+                .withCategory(isProductCategory().withName("HOME"))
+                .withPrice(BigDecimal.ONE)
+        );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+    }
+
+    @Test
+    void getProduct_shouldThrowProductNotFoundException_whenProductNotExist() {
+        willThrow(ProductNotFoundException.class)
+                .given(productRepository).getByUuid(any());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> productService.getProduct(PRODUCT_1_UUID)
+        );
+    }
+
+    @Test
     void update_shouldPassParams() {
         given(productRepository.getByUuid(any()))
                 .willReturn(aFirstHomeProduct().build());

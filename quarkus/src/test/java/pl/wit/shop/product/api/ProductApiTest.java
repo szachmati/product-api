@@ -4,6 +4,7 @@ import io.quarkus.panache.common.Sort;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import pl.wit.shop.product.domain.ProductRepository;
 import pl.wit.shop.product.domain.ProductService;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
@@ -23,6 +24,7 @@ import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.doNothing;
 import static pl.wit.shop.product.api.ProductInputBuilder.aProductInput;
+import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
 import static pl.wit.shop.product.domain.ProductCategoryRepository.ProductCategoryNotFoundException;
 import static pl.wit.shop.product.domain.ProductService.ProductAlreadyExistsException;
 
@@ -120,6 +122,34 @@ public class ProductApiTest implements ProductTestDataIdentifiers {
         .then()
                 .statusCode(200)
                 .body("$", empty());
+    }
+
+    @Test
+    void getProduct_shouldReturn200() {
+        BDDMockito.given(productService.getProduct(any()))
+                .willReturn(aFirstHomeProduct().build());
+
+        given()
+                .pathParam("uuid", PRODUCT_1_UUID)
+        .when()
+                .get(PRODUCT_API + "/{uuid}")
+        .then()
+                .statusCode(200);
+
+        then(productService).should().getProduct(PRODUCT_1_UUID);
+    }
+
+    @Test
+    void getProduct_shouldReturn404_whenProductNotExist() {
+        willThrow(new ProductRepository.ProductNotFoundException(PRODUCT_1_UUID))
+                .given(productService).getProduct(any());
+
+        given()
+                .pathParam("uuid", PRODUCT_1_UUID)
+        .when()
+                .get(PRODUCT_API + "/{uuid}")
+        .then()
+                .statusCode(404);
     }
 
     @Test

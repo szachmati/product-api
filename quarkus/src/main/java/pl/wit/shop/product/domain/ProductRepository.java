@@ -19,15 +19,17 @@ public class ProductRepository implements PanacheRepositoryBase<Product, Long> {
     }
 
     public List<Product> findAllByCategoryName(String category, Sort sort, int pageNumber, int pageSize) {
-        return find(
-                "SELECT p FROM Product p INNER JOIN FETCH p.category pc " +
-                        "WHERE pc.name = ?1 ", sort, category)
+        return find("""
+                SELECT p FROM Product p INNER JOIN FETCH p.category pc WHERE pc.name = ?1
+                """, sort, category)
                 .page(Page.of(pageNumber, pageSize))
                 .list();
     }
 
     public Product getByUuid(UUID uuid) {
-        return find("uuid", uuid)
+        return find("""
+                SELECT p FROM Product p INNER JOIN FETCH p.category pc WHERE p.uuid = ?1
+                """, uuid)
                 .firstResultOptional()
                 .orElseThrow(() -> new ProductNotFoundException(uuid));
     }

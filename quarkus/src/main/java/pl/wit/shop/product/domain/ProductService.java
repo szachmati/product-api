@@ -38,6 +38,10 @@ public class ProductService {
         return productRepository.findAllByCategoryName(category, sort, pageNumber, pageSize);
     }
 
+    public Product getProduct(UUID uuid) {
+        return productRepository.getByUuid(uuid);
+    }
+
     @Transactional
     public void update(UUID uuid, ProductSaveDto dto) {
         Product product = productRepository.getByUuid(uuid);

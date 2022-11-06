@@ -105,6 +105,21 @@ public class ProductApi {
                 .toList();
     }
 
+    @Operation(summary = "Get product by id")
+    @APIResponses({
+            @APIResponse(responseCode = "200", description = "Product"),
+            @APIResponse(responseCode = "404", description = "Product with given id was not found")
+    })
+    @GET
+    @Path("{uuid}")
+    public ProductOutput getProduct(
+            @Parameter(description = "Product id", required = true)
+            @PathParam("uuid") UUID uuid
+    ) {
+        return ProductOutput.from(productService.getProduct(uuid));
+    }
+
+
     @Operation(summary = "Update product")
     @APIResponses({
             @APIResponse(responseCode = "200", description = "Product was updated successfully"),
