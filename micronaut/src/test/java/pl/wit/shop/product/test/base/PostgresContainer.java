@@ -7,6 +7,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Map;
 
+//TODO Does not work, working solution in application-test.yml
 @Testcontainers
 public class PostgresContainer implements TestPropertyProvider {
 

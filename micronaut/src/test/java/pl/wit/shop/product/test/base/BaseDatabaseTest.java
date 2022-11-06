@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MicronautTest
-public class BaseDatabaseTest extends PostgresContainer {
+public class BaseDatabaseTest {
 
     @Inject
     private TransactionOperations<?> transactionOperations;
