@@ -1,6 +1,7 @@
 package pl.wit.shop.product.api;
 
 import io.quarkus.panache.common.Sort;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -42,6 +43,7 @@ public class ProductApi {
     @Operation(summary = "Create product")
     @APIResponses({
             @APIResponse(responseCode = "201", description = "Product was created successfully"),
+            @APIResponse(responseCode = "404", description = "Product category not found"),
             @APIResponse(responseCode = "409", description = "Product with given name already exists" +
                     "in category")
     })
@@ -79,24 +81,25 @@ public class ProductApi {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ProductOutput> findAllByCategoryName(
-            @Parameter(description = "Product category", required = true)
+            @Parameter(description = "Product category", required = true,
+                    content = @Content(schema = @Schema(enumeration = {
+                            "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                            "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+                    })))
             @QueryParam("category") String category,
             @Parameter(description = "Sort field", required = true)
-            @QueryParam("sort") String sort,
+            @QueryParam("sort") ProductSort sort,
             @Parameter(description = "Sort direction", required = true)
-            @QueryParam("sortDir") String sortDirection,
+            @QueryParam("sortDir") Sort.Direction sortDirection,
             @Parameter(description = "Page number", required = true)
             @QueryParam("page") int page,
             @Parameter(description = "Page size", required = true)
             @QueryParam("size") int size
 
     ) {
-        Sort.Direction direction = Sort.Direction.Ascending;
-        if ("desc".equalsIgnoreCase(sortDirection)) {
-            direction = Sort.Direction.Descending;
-        }
+
         return productService
-                .findAllByCategoryName(category, Sort.by(sort).direction(direction), page, size)
+                .findAllByCategoryName(category, Sort.by(sort.getValue()).direction(sortDirection), page, size)
                 .stream()
                 .map(ProductOutput::from)
                 .toList();
@@ -116,6 +119,7 @@ public class ProductApi {
     public void update(
             @Parameter(description = "Product id", required = true)
             @PathParam("uuid") UUID uuid,
+            @Parameter(description = "Product input data", required = true)
             @Valid ProductInput input
     ) {
         productService.update(uuid, input.toDto());
@@ -123,11 +127,14 @@ public class ProductApi {
 
     @Schema
     public record ProductInput(
-            @Parameter(description = "Product name")
+            @Schema(description = "Product name", required = true, example = "LG 123")
             @NotBlank String name,
-            @Parameter(description = "Product category")
-            @NotNull String category,
-            @Parameter(description = "Product price")
+            @Schema(description = "Product category", required = true, example = "MUSIC", enumeration = {
+                    "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                    "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+            })
+            @NotBlank String category,
+            @Schema(description = "Product price", required = true, example = "33.99")
             @NotNull BigDecimal price
     ) {
         ProductSaveDto toDto() {
@@ -138,13 +145,13 @@ public class ProductApi {
     @Value
     @Schema
     public static class ProductOutput {
-        @Parameter(description = "Product id")
+        @Schema(description = "Product id", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
         UUID uuid;
-        @Parameter(description = "Product category")
+        @Schema(description = "Product category", example = "ELECTRONICS")
         String category;
-        @Parameter(description = "Product name")
+        @Schema(description = "Product name", example = "Playstation 4")
         String name;
-        @Parameter(description = "Product price")
+        @Schema(description = "Product price", example = "1200.87")
         BigDecimal price;
 
         static ProductOutput from(Product product) {
@@ -155,5 +162,15 @@ public class ProductApi {
                     product.getPrice()
             );
         }
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    private enum ProductSort {
+        PRODUCT_NAME("p.name"),
+        PRODUCT_PRICE("p.price"),
+        PRODUCT_CATEGORY("pc.name");
+
+        private final String value;
     }
 }

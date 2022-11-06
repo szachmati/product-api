@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -27,7 +28,8 @@ import static java.util.Objects.requireNonNull;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq_gen")
+    @SequenceGenerator(name = "product_seq_gen", sequenceName = "product_seq", allocationSize = 1)
     @Getter(AccessLevel.PRIVATE)
     private final Long id;
 
