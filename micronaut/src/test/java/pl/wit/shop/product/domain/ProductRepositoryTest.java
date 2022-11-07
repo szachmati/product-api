@@ -22,7 +22,7 @@ import static pl.wit.shop.product.domain.ProductBuilder.aSecondHomeProduct;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.anElectronicsProductCategory;
 
-@MicronautTest
+@MicronautTest(transactional = false)
 class ProductRepositoryTest extends BaseDatabaseTest implements ProductTestDataIdentifiers {
 
     @Inject

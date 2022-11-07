@@ -2,8 +2,16 @@ micronaut:
   server:
     port: 9999
 datasources:
-  default:
+  test:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     jdbc-url: jdbc:tc:postgresql:14:///postgres&TC_REUSABLE=true
     username: test
     password: test
+
+flyway:
+  datasources:
+    test:
+      enabled: true
+      locations:
+        - "classpath:/db/migration"
+      baseline-on-migrate: true

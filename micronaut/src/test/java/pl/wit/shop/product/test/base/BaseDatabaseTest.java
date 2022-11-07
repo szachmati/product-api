@@ -38,7 +38,7 @@ public class BaseDatabaseTest {
 
     private List getTableNamesInCurrentSchema() {
         return entityManager
-                .createNativeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'public'")
+                .createNativeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'public' AND TABLE_NAME <> 'flyway_schema_history'")
                 .getResultList();
     }
 
