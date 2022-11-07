@@ -3,6 +3,7 @@ package pl.wit.shop.product.api;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -26,6 +27,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 
 import static pl.wit.shop.product.api.ProductInputBuilder.aProductInput;
+import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
 import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
 
 @MicronautTest
@@ -124,6 +126,37 @@ class ProductApiTest implements ProductTestDataIdentifiers {
         assertThat(result.isEmpty(), Matchers.is(true));
         then(productService).should()
                 .findAllProductsInCategory("HOME", Pageable.from(2, 5, Sort.of(Sort.Order.desc("name"))));
+    }
+
+    @Test
+    void getProduct_shouldReturn200(RequestSpecification spec) {
+        given(productService.getProduct(PRODUCT_1_UUID))
+                .willReturn(aFirstHomeProduct().build());
+
+        spec
+                .given()
+                .pathParam("uuid", PRODUCT_1_UUID)
+                .when()
+                .get(PRODUCT_API + "/{uuid}")
+                .then()
+                        .statusCode(HttpStatus.OK.getCode());
+
+        then(productService).should().getProduct(PRODUCT_1_UUID);
+    }
+
+    @Test
+    void getProduct_shouldReturn404_whenProductNotExist(RequestSpecification spec) {
+        willThrow(new ProductNotFoundException(PRODUCT_1_UUID))
+                .given(productService).getProduct(any());
+
+        spec
+                .given()
+                .pathParam("uuid", PRODUCT_1_UUID)
+                .when()
+                .get(PRODUCT_API + "/{uuid}")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.getCode());
+
     }
 
     @Test

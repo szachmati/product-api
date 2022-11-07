@@ -1,5 +1,7 @@
 package pl.wit.shop.product.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Sort;
 import io.micronaut.http.HttpRequest;
@@ -41,6 +43,8 @@ import static pl.wit.shop.product.api.ProductApi.ProductOutput;
 
 @MicronautTest(transactional = false)
 class ProductApiIntegrationTest extends BaseDatabaseTest implements ProductTestDataIdentifiers {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Inject
     private ProductRepository productRepository;
@@ -126,6 +130,29 @@ class ProductApiIntegrationTest extends BaseDatabaseTest implements ProductTestD
                         .withProperty("price", is(new BigDecimal("1.0"))) //TODO
                         .withProperty("category", is("HOME"))
         ));
+    }
+
+    @Test
+    void getProduct_shouldReturnProduct() throws JsonProcessingException {
+        final ProductCategory homeProductCategory = productCategoryRepository.save(aHomeProductCategory().build());
+        productRepository.save(aFirstHomeProduct()
+                .withCategory(homeProductCategory)
+                .withPrice(new BigDecimal("99.99"))
+                .build()
+        );
+
+        HttpRequest<ProductInput> request = HttpRequest.GET("/" + PRODUCT_1_UUID);
+        HttpResponse<String> response = httpClient.toBlocking().exchange(request, String.class);
+
+
+        ProductOutput productOutput = objectMapper.readValue(response.body(), ProductOutput.class);
+        assertThat(response.status(), is(HttpStatus.OK));
+        assertThat(productOutput, pojo(ProductOutput.class)
+                .where("uuid", is(PRODUCT_1_UUID))
+                .where("name", is("Home product"))
+                .where("price", is(new BigDecimal("99.99")))
+                .where("category", is("HOME"))
+        );
     }
 
     @Test

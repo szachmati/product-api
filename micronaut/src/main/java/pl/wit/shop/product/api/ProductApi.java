@@ -101,6 +101,16 @@ public class ProductApi {
                 .map(ProductOutput::from);
     }
 
+    @Operation(summary = "Get product by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product data"),
+            @ApiResponse(responseCode = "404", description = "Product with given id was not found")
+    })
+    @Get("{uuid}")
+    public ProductOutput getProduct(@PathVariable UUID uuid) {
+        return ProductOutput.from(productService.getProduct(uuid));
+    }
+
     @Operation(summary = "Update product")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Product was updated successfully"),
@@ -132,18 +142,17 @@ public class ProductApi {
         }
     }
 
-    @Value
     @Schema
-    public static class ProductOutput {
-        @Parameter(description = "Product id")
-        UUID uuid;
-        @Parameter(description = "Product category")
-        String category;
-        @Parameter(description = "Product name")
-        String name;
-        @Parameter(description = "Product price")
-        BigDecimal price;
-
+    public record ProductOutput(
+            @Parameter(description = "Product id")
+            UUID uuid,
+            @Parameter(description = "Product category")
+            String category,
+            @Parameter(description = "Product name")
+            String name,
+            @Parameter(description = "Product price")
+            BigDecimal price
+    ) {
         static ProductOutput from(Product product) {
             return new ProductOutput(
                     product.getUuid(),

@@ -15,6 +15,9 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
     boolean existsByNameAndCategoryName(String name, String category);
 
+    @Query(value = "SELECT product_ FROM Product product_ " +
+            "INNER JOIN FETCH product_.category " +
+            "WHERE product_.uuid = :uuid")
     Optional<Product> findByUuid(UUID uuid);
 
     @Query(value = "SELECT product_ FROM Product product_ " +

@@ -17,6 +17,7 @@ import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -112,6 +113,27 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
         assertThat(result.getContent(), Matchers.empty());
         then(productRepository).should().findAllProductsInCategory("HOME", Pageable.from(0, 5));
+    }
+
+    @Test
+    void getProduct_shouldPassParams() {
+        given(productRepository.getByUuid(any()))
+                .willReturn(null);
+
+        Product product = productService.getProduct(PRODUCT_1_UUID);
+
+        assertThat(product, nullValue());
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+    }
+
+    @Test
+    void getProduct_shouldThrowProductNotFoundException_whenProductNotExist() {
+        willThrow(ProductNotFoundException.class)
+                .given(productRepository).getByUuid(any());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> productService.getProduct(PRODUCT_1_UUID)
+        );
     }
 
     @Test
