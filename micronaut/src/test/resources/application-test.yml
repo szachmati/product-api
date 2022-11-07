@@ -2,14 +2,14 @@ micronaut:
   server:
     port: 9999
 datasources:
-  test:
+  default:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     jdbc-url: jdbc:tc:postgresql:14:///postgres&TC_REUSABLE=true
     username: test
     password: test
 
 flyway:
-  datasources:
+  default:
     test:
       enabled: true
       locations:

@@ -173,7 +173,7 @@ public class ProductApi {
 
     @Getter
     @RequiredArgsConstructor
-    private enum ProductSort {
+    public enum ProductSort {
 
         PRODUCT_NAME("name"),
         PRODUCT_PRICE("price"),

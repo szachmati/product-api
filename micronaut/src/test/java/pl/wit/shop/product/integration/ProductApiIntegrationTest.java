@@ -102,8 +102,8 @@ class ProductApiIntegrationTest extends BaseDatabaseTest implements ProductTestD
         HttpRequest<String> request = HttpRequest.GET(
                 UriBuilder.of("")
                         .queryParam("category", "HOME")
-                        .queryParam("sort", "price")
-                        .queryParam("direction", "DESC")
+                        .queryParam("sort", ProductApi.ProductSort.PRODUCT_PRICE)
+                        .queryParam("direction", Sort.Order.Direction.DESC)
                         .queryParam("page", "0")
                         .queryParam("size", "8")
                         .build()
