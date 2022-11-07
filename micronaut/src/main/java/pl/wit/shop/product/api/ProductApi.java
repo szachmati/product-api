@@ -22,8 +22,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import pl.wit.shop.product.domain.Product;
 import pl.wit.shop.product.domain.ProductSaveDto;
 import pl.wit.shop.product.domain.ProductService;
@@ -43,6 +43,7 @@ public class ProductApi {
     @Operation(summary = "Create product")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Product was created successfully"),
+            @ApiResponse(responseCode = "404", description = "Product category not found"),
             @ApiResponse(responseCode = "409", description = "Product with given name already exists" +
                     "in category")
     })
@@ -78,7 +79,11 @@ public class ProductApi {
     @Get(produces = MediaType.APPLICATION_JSON)
     @Status(HttpStatus.OK)
     public Page<ProductOutput> findAllByCategoryName(
-            @Parameter(description = "Products category", required = true)
+            @Parameter(description = "Product category", required = true,
+                    content = @Content(schema = @Schema(allowableValues = {
+                            "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                            "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+                    })))
             @QueryValue(value = "category", defaultValue = "HOME")
             String category,
             @QueryValue(value = "page")
@@ -89,13 +94,13 @@ public class ProductApi {
             int size,
             @QueryValue(value = "sort")
             @Parameter(description = "Sort field", required = true)
-            String sort,
+            ProductSort sort,
             @QueryValue(value = "direction")
             @Parameter(description = "Sort direction", required = true)
             Sort.Order.Direction direction
     ) {
         Sort.Order order = direction == Sort.Order.Direction.ASC
-                ? Sort.Order.asc(sort) : Sort.Order.desc(sort);
+                ? Sort.Order.asc(sort.getValue()) : Sort.Order.desc(sort.getValue());
         Pageable pageable = Pageable.from(page, size, Sort.of(order));
         return productService.findAllProductsInCategory(category, pageable)
                 .map(ProductOutput::from);
@@ -130,11 +135,14 @@ public class ProductApi {
 
     @Schema
     public record ProductInput(
-            @Parameter(description = "Product name")
+            @Schema(description = "Product name", required = true, example = "LG 123")
             @NotBlank String name,
-            @Parameter(description = "Product category")
-            @NotNull String category,
-            @Parameter(description = "Product price")
+            @Schema(description = "Product category", required = true, example = "MUSIC", allowableValues = {
+                    "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                    "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+            })
+            @NotBlank String category,
+            @Schema(description = "Product price", required = true, example = "33.99")
             @NotNull BigDecimal price
     ) {
         ProductSaveDto toDto() {
@@ -144,13 +152,13 @@ public class ProductApi {
 
     @Schema
     public record ProductOutput(
-            @Parameter(description = "Product id")
+            @Schema(description = "Product id", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
             UUID uuid,
-            @Parameter(description = "Product category")
+            @Schema(description = "Product category", example = "ELECTRONICS")
             String category,
-            @Parameter(description = "Product name")
+            @Schema(description = "Product name", example = "Playstation 4")
             String name,
-            @Parameter(description = "Product price")
+            @Schema(description = "Product price", example = "1200.87")
             BigDecimal price
     ) {
         static ProductOutput from(Product product) {
@@ -161,5 +169,16 @@ public class ProductApi {
                     product.getPrice()
             );
         }
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    private enum ProductSort {
+
+        PRODUCT_NAME("name"),
+        PRODUCT_PRICE("price"),
+        PRODUCT_CATEGORY("name");
+
+        private final String value;
     }
 }
