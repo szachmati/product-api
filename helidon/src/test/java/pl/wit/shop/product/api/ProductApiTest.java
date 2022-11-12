@@ -3,23 +3,20 @@ package pl.wit.shop.product.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.helidon.microprofile.tests.junit5.Configuration;
 import io.helidon.microprofile.tests.junit5.HelidonTest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.TransactionManager;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.Getter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.common.repository.Sort;
 import pl.wit.shop.product.domain.Product;
 import pl.wit.shop.product.domain.ProductCategory;
 import pl.wit.shop.product.domain.ProductRepository;
+import pl.wit.shop.product.test.base.BaseDatabaseTest;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 import pl.wit.shop.product.test.transaction.TransactionOperations;
 
@@ -42,32 +39,17 @@ import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategor
 import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
 
 @HelidonTest
-public class ProductApiTest implements ProductTestDataIdentifiers, TransactionOperations {
+@Configuration(useExisting = true)
+public class ProductApiTest extends BaseDatabaseTest implements ProductTestDataIdentifiers, TransactionOperations {
 
     private static final String PRODUCT_API = "/api/products";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Inject
     private WebTarget webTarget;
 
-    @Getter
-    @Inject
-    private TransactionManager transactionManager;
-
     @Inject
     private ProductRepository productRepository;
-
-    @BeforeEach
-    void setUp() {
-        inTransactionWithoutResult(() -> {
-            entityManager
-                    .createNativeQuery("TRUNCATE TABLE product, product_category RESTART IDENTITY")
-                    .executeUpdate();
-        });
-    }
 
     @Test
     void create_shouldCreateProduct() {

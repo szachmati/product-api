@@ -29,6 +29,7 @@
         <glassfish-expressly.version>5.0.0</glassfish-expressly.version>
         <testcontainers.version>1.17.4</testcontainers.version>
         <openapi-ui.version>2.0.0</openapi-ui.version>
+        <flyway.version>8.5.13</flyway.version>
     </properties>
 
     <dependencies>
@@ -104,6 +105,11 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -285,6 +291,11 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
             </plugin>
         </plugins>
     </build>

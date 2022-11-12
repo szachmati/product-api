@@ -2,6 +2,7 @@ package pl.wit.shop.product.test.base;
 
 import io.helidon.config.mp.MpConfigSources;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -18,16 +19,29 @@ public class PostgresContainer {
                     .withDatabaseName("shop")
                     .withUsername("shop")
                     .withPassword("shop")
+                    .withExposedPorts(5432, 9999)
                     .withReuse(true);
 
+    @BeforeAll
+    public static void initContainer() {
+        POSTGRE_SQL_CONTAINER.start();
+        configure();
+    }
 
-    protected static void addAdditionalConfig() {
+    @AfterAll
+    static void tearDown() {
+        if (POSTGRE_SQL_CONTAINER.isRunning()) {
+            POSTGRE_SQL_CONTAINER.stop();
+        }
+    }
+
+    private static void configure() {
         Map<String, String> configValues = Map.of(
                 "mp.initializer.allow", "true",
-        "javax.sql.DataSource.shopDataSource.dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource",
-        "javax.sql.DataSource.shopDataSource.dataSource.url", POSTGRE_SQL_CONTAINER.getJdbcUrl(),
-        "javax.sql.DataSource.shopDataSource.dataSource.user", POSTGRE_SQL_CONTAINER.getUsername(),
-        "javax.sql.DataSource.shopDataSource.dataSource.password", POSTGRE_SQL_CONTAINER.getPassword()
+                "javax.sql.DataSource.shopDataSource.dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource",
+                "javax.sql.DataSource.shopDataSource.dataSource.url", POSTGRE_SQL_CONTAINER.getJdbcUrl(),
+                "javax.sql.DataSource.shopDataSource.dataSource.user", POSTGRE_SQL_CONTAINER.getUsername(),
+                "javax.sql.DataSource.shopDataSource.dataSource.password", POSTGRE_SQL_CONTAINER.getPassword()
         );
 
         org.eclipse.microprofile.config.Config mpConfig = ConfigProviderResolver.instance()
@@ -35,17 +49,5 @@ public class PostgresContainer {
                 .withSources(MpConfigSources.create(configValues))
                 .build();
         ConfigProviderResolver.instance().registerConfig(mpConfig, Thread.currentThread().getContextClassLoader());
-    }
-
-
-
-    @BeforeAll
-    public static void initContainer() {
-        POSTGRE_SQL_CONTAINER.start();
-        System.setProperty("TEST_DB_URL", POSTGRE_SQL_CONTAINER.getJdbcUrl());
-        System.setProperty("TEST_DB_USER", POSTGRE_SQL_CONTAINER.getUsername());
-        System.setProperty("TEST_DB_PASSWORD", POSTGRE_SQL_CONTAINER.getPassword());
-
-        addAdditionalConfig();
     }
 }

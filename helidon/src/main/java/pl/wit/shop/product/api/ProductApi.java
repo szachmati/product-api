@@ -16,7 +16,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -173,7 +176,10 @@ public class ProductApi {
 
 
     @Schema
-    @Value
+    @NoArgsConstructor(force = true)
+    @AllArgsConstructor
+    @Getter
+    @FieldDefaults(makeFinal = true)
     public static class ProductOutput {
         @Parameter(description = "Product id")
         UUID uuid;
