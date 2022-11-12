@@ -28,9 +28,9 @@ public class ProductCategoryRepositoryTest extends BaseDatabaseTest implements T
 
     @Test
     void getByName_shouldProductCategory_whenCategoryExist() {
-        inTransactionWithoutResult(() -> {
-            productCategoryRepository.save(anElectronicsProductCategory().build());
-        });
+        inTransactionWithoutResult(() ->
+            productCategoryRepository.save(anElectronicsProductCategory().build())
+        );
 
         assertThat(productCategoryRepository.getByName("ELECTRONICS"), isProductCategory().withName("ELECTRONICS"));
     }

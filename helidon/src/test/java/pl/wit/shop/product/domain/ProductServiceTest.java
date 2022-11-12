@@ -42,7 +42,6 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
     @InjectMocks
     private ProductService productService;
 
-
     @Test
     void create_shouldPassParams() {
         given(productCategoryRepository.getByName(anyString()))

@@ -42,7 +42,7 @@ public class BaseDatabaseTest extends PostgresContainer implements TransactionOp
 
     private void createEntities() {
         Flyway flyway = new Flyway(Flyway.configure().dataSource(dataSource));
-        if (flyway.info().applied().length != 2) {
+        if (flyway.info().current() == null) {
             flyway.migrate();
         }
     }
