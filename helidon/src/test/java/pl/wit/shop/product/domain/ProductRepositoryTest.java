@@ -1,17 +1,14 @@
 package pl.wit.shop.product.domain;
 
+import io.helidon.microprofile.tests.junit5.Configuration;
 import io.helidon.microprofile.tests.junit5.HelidonTest;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.TransactionManager;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.wit.shop.common.repository.Pageable;
 import pl.wit.shop.common.repository.Sort;
+import pl.wit.shop.product.test.base.BaseDatabaseTest;
 import pl.wit.shop.product.test.transaction.TransactionOperations;
 
 import java.math.BigDecimal;
@@ -29,29 +26,14 @@ import static pl.wit.shop.product.test.data.ProductTestDataIdentifiers.PRODUCT_2
 
 @Slf4j
 @HelidonTest
-class ProductRepositoryTest implements TransactionOperations {
+@Configuration(useExisting = true)
+class ProductRepositoryTest extends BaseDatabaseTest implements TransactionOperations {
 
     @Inject
     private ProductRepository productRepository;
 
     @Inject
     private ProductCategoryRepository productCategoryRepository;
-
-    @Getter
-    @Inject
-    private TransactionManager transactionManager;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @BeforeEach
-    void init() {
-        inTransactionWithoutResult(() ->
-            entityManager
-                    .createNativeQuery("TRUNCATE TABLE product, product_category RESTART IDENTITY")
-                    .executeUpdate()
-        );
-    }
 
     @Test
     void existsByNameAndCategoryName_shouldReturnBooleanValue() {
