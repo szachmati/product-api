@@ -11,8 +11,12 @@ import javax.sql.DataSource;
 @ApplicationScoped
 public class ApplicationStartupEventListener {
 
+    private final DataSource dataSource;
+
     @Inject
-    private DataSource dataSource;
+    public ApplicationStartupEventListener(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     private void migrateOnStartup(@Observes @Initialized(ApplicationScoped.class) Object event) {
         Flyway flyway = new Flyway(Flyway.configure().dataSource(dataSource));

@@ -162,11 +162,14 @@ public class ProductApi {
 
     @Schema
     public record ProductInput(
-            @Parameter(description = "Product name")
+            @Schema(description = "Product name", required = true, example = "LG 123")
             @NotBlank String name,
-            @Parameter(description = "Product category")
-            @NotNull String category,
-            @Parameter(description = "Product price")
+            @Schema(description = "Product category", required = true, example = "MUSIC", enumeration = {
+                    "HOME", "ELECTRONICS", "CARS", "FOOD", "FURNITURE",
+                    "MOBILE PHONES", "FASHION", "MUSIC", "SPORT", "CHILD", "HEALTH"
+            })
+            @NotBlank String category,
+            @Schema(description = "Product price", required = true, example = "33.99")
             @NotNull BigDecimal price
     ) {
         ProductSaveDto toDto() {
@@ -181,13 +184,13 @@ public class ProductApi {
     @Getter
     @FieldDefaults(makeFinal = true)
     public static class ProductOutput {
-        @Parameter(description = "Product id")
+        @Schema(description = "Product id", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
         UUID uuid;
-        @Parameter(description = "Product category")
+        @Schema(description = "Product category", example = "ELECTRONICS")
         String category;
-        @Parameter(description = "Product name")
+        @Schema(description = "Product name", example = "Playstation 4")
         String name;
-        @Parameter(description = "Product price")
+        @Schema(description = "Product price", example = "1200.87")
         BigDecimal price;
 
         static ProductOutput from(Product product) {
