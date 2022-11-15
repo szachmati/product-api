@@ -31,6 +31,12 @@ Build the native image using the native image profile:
 mvn package -DskipTests -Pnative-image
 ```
 
+When command above is not working try
+
+```
+mvn clean package -DskipTests && native-image -jar target/shop.jar
+```
+
 This uses the helidon-maven-plugin to perform the native compilation using your installed copy of GraalVM. It might take a while to complete.
 Once it completes start the application using the native executable (no JVM!):
 
