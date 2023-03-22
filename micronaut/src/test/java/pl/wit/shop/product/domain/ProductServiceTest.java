@@ -2,13 +2,12 @@ package pl.wit.shop.product.domain;
 
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
+import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import pl.wit.shop.product.test.data.ProductTestDataIdentifiers;
 
 import java.math.BigDecimal;
@@ -24,19 +23,20 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.mock;
 import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
 import static pl.wit.shop.product.domain.ProductRepository.ProductNotFoundException;
 import static pl.wit.shop.product.domain.ProductSaveDtoBuilder.aProductSaveDto;
 
-@ExtendWith(MockitoExtension.class)
+@MicronautTest
 class ProductServiceTest implements ProductTestDataIdentifiers {
 
-    @Mock
-    private ProductCategoryRepository productCategoryRepository;
-    @Mock
-    private ProductRepository productRepository;
-    @InjectMocks
+    @MockBean(ProductCategoryRepository.class)
+    final ProductCategoryRepository productCategoryRepository = mock(ProductCategoryRepository.class);
+    @MockBean(ProductRepository.class)
+    final ProductRepository productRepository = mock(ProductRepository.class);
+    @Inject
     private ProductService productService;
 
     @Test
@@ -197,5 +197,4 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
                 )
         );
     }
-
 }
