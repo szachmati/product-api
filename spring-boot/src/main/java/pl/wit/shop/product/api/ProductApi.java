@@ -44,7 +44,7 @@ public class ProductApi {
 
     @Operation(summary = "Create product")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Product was created successfully"),
+            @ApiResponse(responseCode = "201", description = "Product was created successfully"),
             @ApiResponse(responseCode = "404", description = "Product category not found"),
             @ApiResponse(responseCode = "409", description = "Product with given name already exists" +
                     "in category")
