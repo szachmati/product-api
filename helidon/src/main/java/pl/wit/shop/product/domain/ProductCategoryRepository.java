@@ -9,7 +9,10 @@ import java.util.function.Supplier;
 public interface ProductCategoryRepository extends BaseRepository<ProductCategory> {
 
     Optional<ProductCategory> findByName(String name);
-    ProductCategory getByName(String name);
+
+    default ProductCategory getByName(String name) {
+        return findByName(name).orElseThrow(notFoundException(name));
+    }
 
     @Override
     default Supplier<NotFoundException> notFoundException(String name) {

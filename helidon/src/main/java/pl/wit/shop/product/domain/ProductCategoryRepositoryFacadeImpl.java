@@ -29,9 +29,4 @@ public class ProductCategoryRepositoryFacadeImpl implements ProductCategoryRepos
             return Optional.empty();
         }
     }
-
-    @Override
-    public ProductCategory getByName(String name) {
-      return findByName(name).orElseThrow(notFoundException(name));
-    }
 }
