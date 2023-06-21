@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
@@ -49,6 +50,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
                 .willReturn(aHomeProductCategory().build());
         given(productRepository.existsByNameAndCategoryName(anyString(), anyString()))
                 .willReturn(false);
+        willDoNothing().given(productRepository).persistAndFlush(any());
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
 
         productService.create(aProductSaveDto().build());
@@ -66,14 +68,13 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
     @Test
     void create_shouldThrowProductCategoryNotFoundException_whenProductCategoryNotExist() {
-        given(productRepository.existsByNameAndCategoryName(anyString(), anyString()))
-                .willReturn(false);
         willThrow(ProductCategoryNotFoundException.class)
                 .given(productCategoryRepository).getByName(anyString());
 
         assertThrows(ProductCategoryNotFoundException.class,
                 () -> productService.create(aProductSaveDto().build())
         );
+        then(productCategoryRepository).should().getByName("HOME");
     }
 
     @Test
@@ -84,6 +85,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductAlreadyExistsException.class,
                 () -> productService.create(aProductSaveDto().build())
         );
+        then(productRepository).should().existsByNameAndCategoryName("Home product", "HOME");
     }
 
     @Test
@@ -105,6 +107,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductNotFoundException.class,
                 () -> productService.delete(PRODUCT_1_UUID)
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
     }
 
     @Test
@@ -145,6 +148,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductNotFoundException.class,
                 () -> productService.getProduct(PRODUCT_1_UUID)
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
     }
 
     @Test
@@ -176,6 +180,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductNotFoundException.class,
                 () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
     }
 
     @Test
@@ -188,6 +193,8 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductCategoryNotFoundException.class,
                 () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+        then(productCategoryRepository).should().getByName("HOME");
     }
 
     @Test
@@ -207,6 +214,9 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
                         .build()
                 )
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+        then(productCategoryRepository).should().getByName("HOME");
+        then(productRepository).should().existsByNameAndCategoryName("New name", "HOME");
     }
 
 }
