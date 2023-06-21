@@ -25,7 +25,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 import static pl.wit.shop.product.domain.ProductBuilder.aFirstHomeProduct;
-import static pl.wit.shop.product.domain.ProductBuilder.aMonitorProduct;
 import static pl.wit.shop.product.domain.ProductCategoryBuilder.aHomeProductCategory;
 import static pl.wit.shop.product.domain.ProductCategoryMatcher.isProductCategory;
 import static pl.wit.shop.product.domain.ProductMatcher.isProduct;
@@ -74,6 +73,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductCategoryNotFoundException.class,
                 () -> productService.create(aProductSaveDto().build())
         );
+        then(productCategoryRepository).should().getByName("HOME");
     }
 
     @Test
@@ -86,6 +86,8 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductAlreadyExistsException.class,
                 () -> productService.create(aProductSaveDto().build())
         );
+        then(productCategoryRepository).should().getByName("HOME");
+        then(productRepository).should().existsByNameAndCategoryName("Home product", "HOME");
     }
 
     @Test
@@ -169,6 +171,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductNotFoundException.class,
                 () -> productService.update(NOT_EXISTING_PRODUCT_UUID, aProductSaveDto().build())
         );
+        then(productRepository).should().getByUuid(NOT_EXISTING_PRODUCT_UUID);
     }
 
     @Test
@@ -181,6 +184,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductCategoryNotFoundException.class,
                 () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
         );
+        then(productCategoryRepository).should().getByName("HOME");
     }
 
     @Test
@@ -200,5 +204,8 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
                         .build()
                 )
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+        then(productCategoryRepository).should().getByName("HOME");
+        then(productRepository).should().existsByNameAndCategoryName("New name", "HOME");
     }
 }
