@@ -70,6 +70,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductCategoryRepository.ProductCategoryNotFoundException.class,
                 () -> productService.create(aProductSaveDto().build())
         );
+        then(productCategoryRepository).should().getByName("HOME");
     }
 
     @Test
@@ -82,6 +83,8 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductService.ProductAlreadyExistsException.class,
                 () -> productService.create(aProductSaveDto().build())
         );
+        then(productCategoryRepository).should().getByName("HOME");
+        then(productRepository).should().existsByNameAndCategoryName("Home product", "HOME");
     }
 
 
@@ -104,6 +107,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
 
         assertThrows(ProductRepository.ProductNotFoundException.class,
                 () -> productService.delete(PRODUCT_1_UUID));
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
     }
 
     @Test
@@ -125,6 +129,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         Product product = productService.getProduct(PRODUCT_1_UUID);
 
         assertThat(product.getUuid(), is(PRODUCT_1_UUID));
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
     }
 
     @Test
@@ -135,6 +140,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductRepository.ProductNotFoundException.class,
                 () -> productService.getProduct(PRODUCT_1_UUID)
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
     }
 
     @Test
@@ -161,6 +167,7 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductRepository.ProductNotFoundException.class,
                 () -> productService.update(NOT_EXISTING_PRODUCT_UUID, aProductSaveDto().build())
         );
+        then(productRepository).should().getByUuid(NOT_EXISTING_PRODUCT_UUID);
     }
 
     @Test
@@ -173,6 +180,8 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
         assertThrows(ProductCategoryRepository.ProductCategoryNotFoundException.class,
                 () -> productService.update(PRODUCT_1_UUID, aProductSaveDto().build())
         );
+        then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+        then(productCategoryRepository).should().getByName("HOME");
     }
 
     @Test
@@ -187,5 +196,8 @@ class ProductServiceTest implements ProductTestDataIdentifiers {
        assertThrows(ProductService.ProductAlreadyExistsException.class,
                () ->  productService.update(PRODUCT_1_UUID, aProductSaveDto().withName("product1").build())
        );
+       then(productRepository).should().getByUuid(PRODUCT_1_UUID);
+       then(productCategoryRepository).should().getByName("HOME");
+       then(productRepository).should().existsByNameAndCategoryName("product1", "HOME");
     }
 }
