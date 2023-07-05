@@ -13,3 +13,6 @@ Spring Boot Product API
 2. Run `docker compose -f docker-compose.yml up --build -d`
 3. Spring Boot will listen on `8010` port and Postgres DB on `5432`
 4. Swagger available at `http://localhost:8010/swagger-ui/index.html`
+
+### Build native image
+`mvn -Pnative spring-boot:build-image`
