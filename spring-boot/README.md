@@ -15,4 +15,4 @@ Spring Boot Product API
 4. Swagger available at `http://localhost:8010/swagger-ui/index.html`
 
 ### Build native image
-`mvn -Pnative spring-boot:build-image`
+`mvn -Pnative native:compile`

@@ -21,7 +21,7 @@
         <testcontainers.version>1.17.3</testcontainers.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <spring-boot-starter.version>2.7.2</spring-boot-starter.version>
-        <springdoc-version>1.6.9</springdoc-version>
+        <springdoc-version>2.1.0</springdoc-version>
         <flyway.version>9.19.4</flyway.version>
     </properties>
 
@@ -104,7 +104,7 @@
         <!--   swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc-version}</version>
         </dependency>
 
