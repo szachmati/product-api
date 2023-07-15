@@ -1,4 +1,4 @@
-package gatling.spring.ramp;
+package gatling;
 
 public class DeleteProductSimulation {
 }

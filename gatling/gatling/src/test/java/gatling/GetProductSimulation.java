@@ -1,4 +1,4 @@
-package gatling.spring.ramp;
+package gatling;
 
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
@@ -6,7 +6,7 @@ import io.gatling.javaapi.http.HttpProtocolBuilder;
 
 import java.time.Duration;
 
-import static io.gatling.javaapi.core.CoreDsl.rampUsersPerSec;
+import static io.gatling.javaapi.core.CoreDsl.rampUsers;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.status;
@@ -30,9 +30,8 @@ public class GetProductSimulation extends Simulation {
     {
         setUp(
                 scenario.injectOpen(
-                    rampUsersPerSec(5)
-                            .to(2000)
-                            .during(Duration.ofMinutes(2))
+                    rampUsers(1000)
+                        .during(Duration.ofSeconds(10))
                 )
         ).protocols(httpProtocol);
     }
