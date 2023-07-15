@@ -1,4 +1,4 @@
-package gatling.ramp;
+package gatling.spring.ramp;
 
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
@@ -16,8 +16,8 @@ public class GetProductSimulation extends Simulation {
             .baseUrl("http://localhost:8010")
             .acceptHeader("application/json");
 
-    ScenarioBuilder scenario = scenario("Create product")
-            .exec(http("GET products")
+    ScenarioBuilder scenario = scenario("GET product Scenario")
+            .exec(http("get-products")
                     .get("/api/products")
                     .header("Content-Type", "application/json")
                     .queryParam("category", "HOME")
@@ -30,9 +30,9 @@ public class GetProductSimulation extends Simulation {
     {
         setUp(
                 scenario.injectOpen(
-                    rampUsersPerSec(10)
-                            .to(10000)
-                            .during(Duration.ofMinutes(5))
+                    rampUsersPerSec(5)
+                            .to(2000)
+                            .during(Duration.ofMinutes(2))
                 )
         ).protocols(httpProtocol);
     }
