@@ -1,8 +1,10 @@
 package gatling;
 
+import io.gatling.core.session.el.RandomAlphanumeric;
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.Duration;
 import java.util.Iterator;
@@ -30,7 +32,7 @@ public class CreateProductSimulation extends Simulation {
 
     Iterator<Map<String, Object>> feeder =
             Stream.generate((Supplier<Map<String, Object>>) () ->
-                    Map.of("name", "name-"+ new Random().nextInt(),
+                    Map.of("name", "name-" + RandomStringUtils.randomAlphanumeric(20),
                             "category", getRandomCategory(),
                             "price", 20.0
                     )
@@ -42,10 +44,6 @@ public class CreateProductSimulation extends Simulation {
 
     ScenarioBuilder scenario = scenario("Create product Scenario")
             .feed(feeder)
-            .exec(session -> {
-                System.out.println(session);
-                return session;
-            })
             .exec(http("post-product")
                     .post("/api/products")
                     .header("Content-Type", "application/json")
