@@ -4,9 +4,8 @@ import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 
-import java.time.Duration;
 
-import static io.gatling.javaapi.core.CoreDsl.rampUsers;
+import static gatling.Scenarios.rampUpScenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.status;
@@ -29,10 +28,7 @@ public class GetProductSimulation extends Simulation {
 
     {
         setUp(
-                scenario.injectOpen(
-                    rampUsers(1000)
-                        .during(Duration.ofSeconds(10))
-                )
+               rampUpScenario(scenario)
         ).protocols(httpProtocol);
     }
 

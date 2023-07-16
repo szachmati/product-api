@@ -1,12 +1,10 @@
 package gatling;
 
-import io.gatling.core.session.el.RandomAlphanumeric;
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.time.Duration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +12,8 @@ import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static gatling.Scenarios.rampUpScenario;
 import static io.gatling.javaapi.core.CoreDsl.StringBody;
-import static io.gatling.javaapi.core.CoreDsl.rampUsers;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
@@ -38,9 +36,6 @@ public class CreateProductSimulation extends Simulation {
                     )
             ).iterator();
 
-    private String getRandomCategory() {
-        return CATEGORIES.get(new Random().nextInt(CATEGORIES.size()));
-    }
 
     ScenarioBuilder scenario = scenario("Create product Scenario")
             .feed(feeder)
@@ -52,10 +47,11 @@ public class CreateProductSimulation extends Simulation {
             );
     {
         setUp(
-                scenario.injectOpen(
-                        rampUsers(1000)
-                                .during(Duration.ofSeconds(10))
-                )
+                rampUpScenario(scenario)
         ).protocols(httpProtocol);
+    }
+
+    private String getRandomCategory() {
+        return CATEGORIES.get(new Random().nextInt(CATEGORIES.size()));
     }
 }
